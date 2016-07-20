@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
@@ -159,19 +160,21 @@ final class GraphNavigator
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($context instanceof SerializationContext) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $context->getFormat(), $event = new PreSerializeEvent($context, $data, $type));
-                        $type = $event->getType();
+                if ($this->hasListener('pre', $type['name'], $context)) {
+                    if ($context instanceof DeserializationContext) {
+                        $event = new PreDeserializeEvent($context, $data, $type);
+                    } else {
+                        $event = new PreSerializeEvent($context, $data, $type);
                     }
-                } elseif ($context instanceof DeserializationContext) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_deserialize', $type['name'], $context->getFormat())) {
-                        $this->dispatcher->dispatch('serializer.pre_deserialize', $type['name'], $context->getFormat(), $event = new PreDeserializeEvent($context, $data, $type));
+                    $this->dispatch('pre', $type['name'], $context, $event);
+
+                    if ($context instanceof SerializationContext) {
+                        $type = $event->getType();
+                    } elseif ($context instanceof DeserializationContext) {
                         $type = $event->getType();
                         $data = $event->getData();
                     }
                 }
-
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
@@ -238,6 +241,20 @@ final class GraphNavigator
         }
     }
 
+    protected function hasListener($type, $typeName, Context $context)
+    {
+        $eventName = $context->getDirection() == self::DIRECTION_DESERIALIZATION ? 'deserialize' : 'serialize';
+
+        return null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.'.$type.'_'. $eventName, $typeName, $context->getFormat());
+    }
+
+
+    public function dispatch($type, $typeName, Context $context, Event $event)
+    {
+        $eventName = $context->getDirection() == self::DIRECTION_DESERIALIZATION ? 'deserialize' : 'serialize';
+
+        $this->dispatcher->dispatch('serializer.'.$type.'_'.$eventName, $typeName, $context->getFormat(), $event);
+    }
     private function resolveMetadata(DeserializationContext $context, $data, ClassMetadata $metadata)
     {
         switch (true) {

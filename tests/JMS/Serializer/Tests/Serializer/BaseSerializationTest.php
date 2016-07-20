@@ -509,24 +509,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($order, $this->deserialize($this->getContent('order_with_currency_aware_price'), get_class($order)));
         }
     }
-
-    /**
-     * @group handlerCallback
-     */
-    public function testArticle()
-    {
-        $article = new Article();
-        $article->element = 'custom';
-        $article->value = 'serialized';
-
-        $result = $this->serialize($article);
-        $this->assertEquals($this->getContent('article'), $result);
-
-        if ($this->hasDeserializer()) {
-            $this->assertEquals($article, $this->deserialize($result, 'JMS\Serializer\Tests\Fixtures\Article'));
-        }
-    }
-
+    
     public function testInline()
     {
         $inline = new InlineParent();

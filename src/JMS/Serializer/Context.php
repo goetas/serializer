@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
 use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
@@ -59,9 +60,22 @@ abstract class Context
     /** @var \SplStack */
     private $metadataStack;
 
+    /** @var \SplObjectStorage */
+    private $visitingSet;
+
+    /** @var \SplStack */
+    private $visitingStack;
+
     public function __construct()
     {
         $this->attributes = new Map();
+        $this->visitingSet = new \SplObjectStorage();
+        $this->visitingStack = new \SplStack();
+    }
+
+    public static function create()
+    {
+        return new static();
     }
 
     /**
@@ -79,7 +93,67 @@ abstract class Context
         $this->navigator = $navigator;
         $this->metadataFactory = $factory;
         $this->metadataStack = new \SplStack();
+
+
+        $this->visitingSet = new \SplObjectStorage();
+        $this->visitingStack = new \SplStack();
     }
+
+    public function startVisiting($object)
+    {
+        if ( ! is_object($object)) {
+            return;
+        }
+        if ($this->isVisiting($object)) {
+            return false;
+        }
+        $this->visitingSet->attach($object);
+        $this->visitingStack->push($object);
+        return true;
+    }
+
+    public function stopVisiting($object)
+    {
+        if ( ! is_object($object)) {
+            return;
+        }
+        $this->visitingSet->detach($object);
+        $poppedObject = $this->visitingStack->pop();
+
+        if ($object !== $poppedObject) {
+            throw new RuntimeException('Context visitingStack not working well');
+        }
+    }
+
+    public function isVisiting($object)
+    {
+        if ( ! is_object($object)) {
+            return;
+        }
+
+        return $this->visitingSet->contains($object);
+    }
+
+    public function getVisitingStack()
+    {
+        return $this->visitingStack;
+    }
+
+    public function getVisitingSet()
+    {
+        return $this->visitingSet;
+    }
+
+    public function getDepth()
+    {
+        return $this->visitingStack->count();
+    }
+
+    public function getObject()
+    {
+        return ! $this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
+    }
+
 
     public function accept($data, array $type = null)
     {
@@ -236,8 +310,6 @@ abstract class Context
     {
         return $this->metadataStack;
     }
-
-    abstract public function getDepth();
 
     /**
      * @return integer

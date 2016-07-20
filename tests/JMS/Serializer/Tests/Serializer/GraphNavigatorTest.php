@@ -19,12 +19,14 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\DeserializerGraphNavigator;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\SerializerGraphNavigator;
 use Metadata\MetadataFactory;
 
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
@@ -82,12 +84,14 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        //$this->navigator = new SerializerGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
         $this->navigator->accept($object, null, $this->context);
     }
 
     public function testNavigatorPassesNullOnDeserialization()
     {
+        $this->navigator = new DeserializerGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+
         $class = __NAMESPACE__.'\SerializableClass';
         $metadata = $this->metadataFactory->getMetadataForClass($class);
 
@@ -117,7 +121,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        //$this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
         $this->navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
     }
 
@@ -142,7 +146,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        //$this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
         $this->navigator->accept($object, null, $this->context);
     }
 
@@ -154,7 +158,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $this->objectConstructor = new UnserializeObjectConstructor();
 
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        $this->navigator = new SerializerGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
     }
 }
 

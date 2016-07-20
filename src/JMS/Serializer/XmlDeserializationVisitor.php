@@ -51,10 +51,6 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $this->result = null;
     }
 
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
 
     public function prepare($data)
     {

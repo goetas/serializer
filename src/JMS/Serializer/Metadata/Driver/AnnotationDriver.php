@@ -125,7 +125,7 @@ class AnnotationDriver implements DriverInterface
                     $propertiesAnnotations[] = $methodAnnotations;
                     continue 2;
                 } elseif ($annot instanceof HandlerCallback) {
-                    $classMetadata->addHandlerCallback(GraphNavigator::parseDirection($annot->direction), $annot->format, $method->name);
+                    //$classMetadata->addHandlerCallback(GraphNavigator::parseDirection($annot->direction), $annot->format, $method->name);
                     continue 2;
                 }
             }

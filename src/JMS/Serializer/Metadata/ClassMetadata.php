@@ -49,7 +49,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $xmlNamespaces = array();
     public $accessorOrder;
     public $customOrder;
-    public $handlerCallbacks = array();
+
 
     public $discriminatorDisabled = false;
     public $discriminatorBaseClass;
@@ -119,16 +119,6 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postDeserializeMethods[] = $method;
     }
 
-    /**
-     * @param integer $direction
-     * @param string|integer $format
-     * @param string $methodName
-     */
-    public function addHandlerCallback($direction, $format, $methodName)
-    {
-        $this->handlerCallbacks[$direction][$format] = $methodName;
-    }
-
     public function merge(MergeableInterface $object)
     {
         if ( ! $object instanceof ClassMetadata) {
@@ -142,9 +132,6 @@ class ClassMetadata extends MergeableClassMetadata
         $this->xmlRootName = $object->xmlRootName;
         $this->xmlRootNamespace = $object->xmlRootNamespace;
         $this->xmlNamespaces = array_merge($this->xmlNamespaces, $object->xmlNamespaces);
-
-        // Handler methods are taken from the outer class completely.
-        $this->handlerCallbacks = $object->handlerCallbacks;
 
         if ($object->accessorOrder) {
             $this->accessorOrder = $object->accessorOrder;
@@ -224,7 +211,6 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlNamespaces,
             $this->accessorOrder,
             $this->customOrder,
-            $this->handlerCallbacks,
             $this->discriminatorDisabled,
             $this->discriminatorBaseClass,
             $this->discriminatorFieldName,
@@ -245,7 +231,6 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlNamespaces,
             $this->accessorOrder,
             $this->customOrder,
-            $this->handlerCallbacks,
             $this->discriminatorDisabled,
             $this->discriminatorBaseClass,
             $this->discriminatorFieldName,

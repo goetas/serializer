@@ -77,6 +77,8 @@ class YamlSerializationVisitor extends AbstractVisitor
     /**
      * @param array $data
      * @param array $type
+     * @param Context $context
+     * @return mixed|void
      */
     public function visitArray($data, array $type, Context $context)
     {
@@ -206,11 +208,7 @@ class YamlSerializationVisitor extends AbstractVisitor
     {
         return $this->currentMetadata = $this->metadataStack->pop();
     }
-
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
+    
 
     public function getResult()
     {

@@ -301,6 +301,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
             /** @var DateTimeArraysObject $deserializedObject */
             $deserializedObject = $this->deserialize($this->getContent('array_datetimes_object'), 'Jms\Serializer\Tests\Fixtures\DateTimeArraysObject');
+            var_dump($deserializedObject);
+            exit;
 
             /** deserialized object has a default timezone set depending on user's timezone settings. That's why we manually set the UTC timezone on the DateTime objects. */
             foreach ($deserializedObject->getArrayWithDefaultDateTime() as $dateTime) {
@@ -1020,7 +1022,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                     ),
                 );
 
-                $elements = $visitor->getNavigator()->accept($data, $type, $context);
+                $elements = $context->getNavigator()->accept($data, $type, $context);
                 $list = new AuthorList();
                 foreach ($elements as $author) {
                     $list->add($author);

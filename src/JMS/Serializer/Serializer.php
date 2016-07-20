@@ -68,7 +68,8 @@ class Serializer implements SerializerInterface
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
 
-        $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        $this->serializerNavigator = new SerializerGraphNavigator($this->factory, $this->handlerRegistry, $this->dispatcher);
+        $this->deserializerNavigator = new DeserializerGraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
@@ -79,7 +80,7 @@ class Serializer implements SerializerInterface
 
         return $this->serializationVisitors->get($format)
             ->map(function(VisitorInterface $visitor) use ($context, $data, $format) {
-                $this->visit($visitor, $context, $visitor->prepare($data), $format);
+                $this->visit($visitor, $this->serializerNavigator, $context, $visitor->prepare($data), $format);
 
                 return $visitor->getResult();
             })
@@ -96,7 +97,7 @@ class Serializer implements SerializerInterface
         return $this->deserializationVisitors->get($format)
             ->map(function(VisitorInterface $visitor) use ($context, $data, $format, $type) {
                 $preparedData = $visitor->prepare($data);
-                $navigatorResult = $this->visit($visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
+                $navigatorResult = $this->visit($visitor, $this->deserializerNavigator, $context, $preparedData, $format, $this->typeParser->parse($type));
 
                 return $this->handleDeserializeResult($visitor->getResult(), $navigatorResult);
             })
@@ -121,7 +122,7 @@ class Serializer implements SerializerInterface
 
         return $this->serializationVisitors->get('json')
             ->map(function(JsonSerializationVisitor $visitor) use ($context, $data) {
-                $this->visit($visitor, $context, $data, 'json');
+                $this->visit($visitor, $this->serializerNavigator, $context, $data, 'json');
                 $result = $this->convertArrayObjects($visitor->getRoot());
 
                 if ( ! is_array($result)) {
@@ -154,7 +155,7 @@ class Serializer implements SerializerInterface
 
         return $this->deserializationVisitors->get('json')
             ->map(function(JsonDeserializationVisitor $visitor) use ($data, $type, $context) {
-                $navigatorResult = $this->visit($visitor, $context, $data, 'json', $this->typeParser->parse($type));
+                $navigatorResult = $this->visit($visitor, $this->deserializerNavigator, $context, $data, 'json', $this->typeParser->parse($type));
 
                 return $this->handleDeserializeResult($visitor->getResult(), $navigatorResult);
             })
@@ -162,18 +163,17 @@ class Serializer implements SerializerInterface
         ;
     }
 
-    private function visit(VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
+    private function visit(VisitorInterface $visitor, $navigator, Context $context, $data, $format, array $type = null)
     {
         $context->initialize(
             $format,
             $visitor,
-            $this->navigator,
+            $navigator,
             $this->factory
         );
 
-        $visitor->setNavigator($this->navigator);
-
-        return $this->navigator->accept($data, $type, $context);
+        $visitor->setNavigator($navigator);
+        return $navigator->accept($data, $type, $context);
     }
 
     private function handleDeserializeResult($visitorResult, $navigatorResult)

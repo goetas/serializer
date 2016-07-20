@@ -290,7 +290,7 @@ class XmlDriver extends AbstractFileDriver
 
                     $direction = GraphNavigator::parseDirection((string) $method->attributes()->direction);
                     $format = (string) $method->attributes()->format;
-                    $metadata->addHandlerCallback($direction, $format, (string) $method->attributes()->name);
+                    //$metadata->addHandlerCallback($direction, $format, (string) $method->attributes()->name);
 
                     break;
 

@@ -206,7 +206,7 @@ class YamlDriver extends AbstractFileDriver
             foreach ($config['handler_callbacks'] as $direction => $formats) {
                 foreach ($formats as $format => $methodName) {
                     $direction = GraphNavigator::parseDirection($direction);
-                    $metadata->addHandlerCallback($direction, $format, $methodName);
+                    //$metadata->addHandlerCallback($direction, $format, $methodName);
                 }
             }
         }

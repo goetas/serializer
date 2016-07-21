@@ -21,12 +21,12 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\GraphNavigatorFactory;
 use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\GraphNavigator;
 use Metadata\MetadataFactory;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 {

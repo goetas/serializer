@@ -21,10 +21,10 @@ namespace JMS\Serializer;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
-use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
 use PhpCollection\MapInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Serializer Implementation.
@@ -45,7 +45,10 @@ class Serializer implements SerializerInterface
     /** @var \PhpCollection\MapInterface */
     private $deserializationVisitors;
 
-    private $navigator;
+    /**
+     * @var GraphNavigatorFactory
+     */
+    private $navigatorFactory;
 
     /**
      * Constructor.
@@ -55,7 +58,7 @@ class Serializer implements SerializerInterface
      * @param Construction\ObjectConstructorInterface $objectConstructor
      * @param \PhpCollection\MapInterface $serializationVisitors of VisitorInterface
      * @param \PhpCollection\MapInterface $deserializationVisitors of VisitorInterface
-     * @param EventDispatcher\EventDispatcherInterface $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      * @param TypeParser $typeParser
      */
     public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, MapInterface $serializationVisitors, MapInterface $deserializationVisitors, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null)

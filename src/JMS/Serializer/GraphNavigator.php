@@ -21,10 +21,10 @@ namespace JMS\Serializer;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
-use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Handles traversal along the object graph.
@@ -80,7 +80,7 @@ abstract class GraphNavigator
         }
     }
 
-    public function __construct(MetadataFactoryInterface $metadataFactory, HandlerRegistryInterface $handlerRegistry, EventDispatcherInterface $dispatcher = null)
+    public function __construct(MetadataFactoryInterface $metadataFactory, HandlerRegistryInterface $handlerRegistry, EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
         $this->metadataFactory = $metadataFactory;
@@ -102,7 +102,7 @@ abstract class GraphNavigator
     {
         $eventName = $context->getDirection() == self::DIRECTION_DESERIALIZATION ? 'deserialize' : 'serialize';
 
-        return null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.'.$type.'_'. $eventName, $typeName, $context->getFormat());
+        return $this->dispatcher && $this->dispatcher->hasListeners('serializer.'.$type.'_'. $eventName, $typeName, $context->getFormat());
     }
 
     protected function dispatch($type, $typeName, Context $context, Event $event)

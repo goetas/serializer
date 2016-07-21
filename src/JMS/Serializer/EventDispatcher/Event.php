@@ -20,7 +20,7 @@ namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\Context;
 
-class Event
+class Event extends \Symfony\Component\EventDispatcher\Event
 {
     protected $type;
     private $context;

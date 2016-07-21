@@ -19,8 +19,8 @@
 namespace JMS\Serializer\EventDispatcher\Subscriber;
 
 use JMS\Serializer\EventDispatcher\Event;
-use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Validator\ValidatorInterface;
 
 class SymfonyValidatorSubscriber implements EventSubscriberInterface
@@ -34,9 +34,7 @@ class SymfonyValidatorSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            array('event' => 'serializer.post_deserialize', 'method' => 'onPostDeserialize'),
-        );
+        return array('serializer.post_deserialize' => 'onPostDeserialize');
     }
 
     public function onPostDeserialize(Event $event)

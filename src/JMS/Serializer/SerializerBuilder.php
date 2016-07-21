@@ -29,7 +29,6 @@ use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use PhpCollection\Map;
-use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Metadata\Driver\DriverChain;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
@@ -46,6 +45,7 @@ use Doctrine\Common\Annotations\FileCacheReader;
 use Metadata\Cache\FileCache;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Builder for serializer instances.

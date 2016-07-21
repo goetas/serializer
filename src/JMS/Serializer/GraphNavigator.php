@@ -20,10 +20,6 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
-use JMS\Serializer\EventDispatcher\PreSerializeEvent;
-use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -68,6 +64,22 @@ abstract class GraphNavigator
         }
     }
 
+    protected function callLifecycleMethods($when, ClassMetadata $metadata, Context $context, $object)
+    {
+        $direction = $context->getDirection() == self::DIRECTION_SERIALIZATION ? 'Serialize' : 'Deserialize' ;
+
+        $propName = $when . $direction . 'Methods';
+
+
+        if (!property_exists($metadata, $propName)){
+            return ;
+        }
+        
+        foreach ($metadata->{$propName} as $method){
+            $method->invoke($object);
+        }
+    }
+
     public function __construct(MetadataFactoryInterface $metadataFactory, HandlerRegistryInterface $handlerRegistry, EventDispatcherInterface $dispatcher = null)
     {
         $this->dispatcher = $dispatcher;
@@ -84,6 +96,7 @@ abstract class GraphNavigator
      * @return mixed the return value depends on the direction, and type of visitor
      */
     public abstract function accept($data, array $type = null, Context $context);
+    protected abstract function leaveScope(Context $context, $data);
 
     protected function hasListener($type, $typeName, Context $context)
     {
@@ -91,11 +104,23 @@ abstract class GraphNavigator
 
         return null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.'.$type.'_'. $eventName, $typeName, $context->getFormat());
     }
-    
-    public function dispatch($type, $typeName, Context $context, Event $event)
+
+    protected function dispatch($type, $typeName, Context $context, Event $event)
     {
         $eventName = $context->getDirection() == self::DIRECTION_DESERIALIZATION ? 'deserialize' : 'serialize';
 
         $this->dispatcher->dispatch('serializer.'.$type.'_'.$eventName, $typeName, $context->getFormat(), $event);
+    }
+
+    protected function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
+    {
+        $this->leaveScope($context, $object);
+        $context->popClassMetadata();
+
+        $this->callLifecycleMethods('post', $metadata, $context, $object);
+
+        if ($this->hasListener('post', $type['name'], $context)) {
+            $this->dispatch('post', $metadata->name, $context, new ObjectEvent($context, $object, $type));
+        }
     }
 }

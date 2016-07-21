@@ -18,17 +18,13 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\EventDispatcher\Event;
-use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
-use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
-use JMS\Serializer\Exception\InvalidArgumentException;
 
 /**
  * Handles traversal along the object graph.
@@ -54,6 +50,7 @@ final class DeserializerGraphNavigator extends GraphNavigator
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
      *
+     * @param Context $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
     public function accept($data, array $type = null, Context $context)
@@ -93,14 +90,11 @@ final class DeserializerGraphNavigator extends GraphNavigator
             default:
 
                 $context->increaseDepth();
-
-
+                
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
                 if ($this->hasListener('pre', $type['name'], $context)) {
-
                     $event = new PreDeserializeEvent($context, $data, $type);
-
                     $this->dispatch('pre', $type['name'], $context, $event);
 
                     $type = $event->getType();
@@ -157,6 +151,11 @@ final class DeserializerGraphNavigator extends GraphNavigator
         }
     }
 
+    protected function leaveScope(Context $context, $data)
+    {
+        $context->decreaseDepth();
+    }
+    
     private function resolveMetadata($data, ClassMetadata $metadata)
     {
         switch (true) {
@@ -188,22 +187,4 @@ final class DeserializerGraphNavigator extends GraphNavigator
         return $this->metadataFactory->getMetadataForClass($metadata->discriminatorMap[$typeValue]);
     }
 
-    private function leaveScope(Context $context, $data)
-    {
-        $context->decreaseDepth();
-    }
-
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
-    {
-        $this->leaveScope($context, $object);
-        $context->popClassMetadata();
-
-        foreach ($metadata->postDeserializeMethods as $method) {
-            $method->invoke($object);
-        }
-
-        if ($this->hasListener('post', $type['name'], $context)) {
-            $this->dispatch('post', $metadata->name, $context, new ObjectEvent($context, $object, $type));
-        }
-    }
 }

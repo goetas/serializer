@@ -50,7 +50,9 @@ final class SerializerGraphNavigator extends GraphNavigator
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|array $type array has the format ["name" => string, "params" => array]
      *
+     * @param Context $context
      * @return mixed the return value depends on the direction, and type of visitor
+     * @throws \Exception
      */
     public function accept($data, array $type = null, Context $context)
     {
@@ -151,9 +153,7 @@ final class SerializerGraphNavigator extends GraphNavigator
 
                 $context->pushClassMetadata($metadata);
 
-                foreach ($metadata->preSerializeMethods as $method) {
-                    $method->invoke($data);
-                }
+                $this->callLifecycleMethods('pre', $metadata, $context, $data);
 
                 $object = $data;
 
@@ -174,23 +174,8 @@ final class SerializerGraphNavigator extends GraphNavigator
         }
     }
 
-    private function leaveScope(Context $context, $data)
+    protected function leaveScope(Context $context, $data)
     {
         $context->stopVisiting($data);
-    }
-
-    private function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
-    {
-        $this->leaveScope($context, $object);
-        $context->popClassMetadata();
-
-
-        foreach ($metadata->postSerializeMethods as $method) {
-            $method->invoke($object);
-        }
-
-        if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_serialize', $metadata->name, $context->getFormat())) {
-            $this->dispatcher->dispatch('serializer.post_serialize', $metadata->name, $context->getFormat(), new ObjectEvent($context, $object, $type));
-        }
     }
 }

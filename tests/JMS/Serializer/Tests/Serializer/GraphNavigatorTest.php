@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\GraphNavigatorFactory;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -33,7 +34,10 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
     private $handlerRegistry;
     private $objectConstructor;
     private $dispatcher;
-    private $navigator;
+    /**
+     * @var GraphNavigatorFactory
+     */
+    private $navigatorFactory;
     private $context;
 
     /**
@@ -42,11 +46,13 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testResourceThrowsException()
     {
+        $navigator = $this->navigatorFactory->getGraphNavigator();
+
         $this->context->expects($this->any())
             ->method('getDirection')
             ->will($this->returnValue(GraphNavigator::DIRECTION_SERIALIZATION));
 
-        $this->navigator->accept(STDIN, null, $this->context);
+        $navigator->accept(STDIN, null, $this->context);
     }
 
     public function testNavigatorPassesInstanceOnSerialization()
@@ -82,12 +88,13 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
-        $this->navigator->accept($object, null, $this->context);
+        $navigator = $this->navigatorFactory->getGraphNavigator();
+        $navigator->accept($object, null, $this->context);
     }
 
     public function testNavigatorPassesNullOnDeserialization()
     {
+        $this->context = $this->getMock('JMS\Serializer\DeserializationContext');
         $class = __NAMESPACE__.'\SerializableClass';
         $metadata = $this->metadataFactory->getMetadataForClass($class);
 
@@ -117,8 +124,8 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
-        $this->navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
+        $navigator = $this->navigatorFactory->getGraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION);
+        $navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
     }
 
     public function testNavigatorChangeTypeOnSerialization()
@@ -142,19 +149,19 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
 
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
-        $this->navigator->accept($object, null, $this->context);
+        $navigator = $this->navigatorFactory->getGraphNavigator();
+        $navigator->accept($object, null, $this->context);
     }
 
     protected function setUp()
     {
-        $this->context = $this->getMock('JMS\Serializer\Context');
+        $this->context = $this->getMock('JMS\Serializer\SerializationContext');
         $this->dispatcher = new EventDispatcher();
         $this->handlerRegistry = new HandlerRegistry();
         $this->objectConstructor = new UnserializeObjectConstructor();
 
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
-        $this->navigator = new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        $this->navigatorFactory = new GraphNavigatorFactory($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
     }
 }
 

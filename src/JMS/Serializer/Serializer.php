@@ -45,7 +45,10 @@ class Serializer implements SerializerInterface
     /** @var \PhpCollection\MapInterface */
     private $deserializationVisitors;
 
-    private $navigator;
+    /**
+     * @var GraphNavigatorFactory
+     */
+    private $navigatorFactory;
 
     /**
      * Constructor.
@@ -68,7 +71,7 @@ class Serializer implements SerializerInterface
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
 
-        $this->navigator = new GraphNavigator($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        $this->navigatorFactory = new GraphNavigatorFactory($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
     }
 
     public function serialize($data, $format, SerializationContext $context = null)
@@ -164,16 +167,17 @@ class Serializer implements SerializerInterface
 
     private function visit(VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
     {
+        $navigator = $this->navigatorFactory->getGraphNavigator($context instanceof DeserializationContext ? GraphNavigator::DIRECTION_DESERIALIZATION : GraphNavigator::DIRECTION_SERIALIZATION);
         $context->initialize(
             $format,
             $visitor,
-            $this->navigator,
+            $navigator,
             $this->factory
         );
 
-        $visitor->setNavigator($this->navigator);
+        $visitor->setNavigator($navigator);
 
-        return $this->navigator->accept($data, $type, $context);
+        return $navigator->accept($data, $type, $context);
     }
 
     private function handleDeserializeResult($visitorResult, $navigatorResult)

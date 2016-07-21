@@ -279,21 +279,7 @@ class XmlDriver extends AbstractFileDriver
                 case 'post-deserialize':
                     $metadata->addPostDeserializeMethod(new MethodMetadata($name, (string) $method->attributes()->name));
                     break;
-
-                case 'handler':
-                    if ( ! isset($method->attributes()->format)) {
-                        throw new RuntimeException('The format attribute must be set for "handler" callback methods.');
-                    }
-                    if ( ! isset($method->attributes()->direction)) {
-                        throw new RuntimeException('The direction attribute must be set for "handler" callback methods.');
-                    }
-
-                    $direction = GraphNavigator::parseDirection((string) $method->attributes()->direction);
-                    $format = (string) $method->attributes()->format;
-                    $metadata->addHandlerCallback($direction, $format, (string) $method->attributes()->name);
-
-                    break;
-
+                
                 default:
                     throw new RuntimeException(sprintf('The type "%s" is not supported.', $method->attributes()->name));
             }

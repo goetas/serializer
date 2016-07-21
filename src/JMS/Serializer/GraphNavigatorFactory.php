@@ -18,17 +18,10 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\EventDispatcher\Event;
-use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
-use JMS\Serializer\EventDispatcher\PreSerializeEvent;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
-use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use Metadata\MetadataFactoryInterface;
-use JMS\Serializer\Exception\InvalidArgumentException;
 
 /**
  * Handles traversal along the object graph.
@@ -40,8 +33,6 @@ use JMS\Serializer\Exception\InvalidArgumentException;
  */
 class GraphNavigatorFactory
 {
-    const DIRECTION_SERIALIZATION = 1;
-    const DIRECTION_DESERIALIZATION = 2;
 
     private $dispatcher;
     private $metadataFactory;
@@ -57,10 +48,15 @@ class GraphNavigatorFactory
     }
 
     /**
+     * @param int $direction
      * @return GraphNavigator
      */
-    public function getGraphNavigator()
+    public function getGraphNavigator($direction = GraphNavigator::DIRECTION_SERIALIZATION)
     {
-        return new GraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        if ($direction == GraphNavigator::DIRECTION_DESERIALIZATION) {
+            return new DeserializerGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
+        } else {
+            return new SerializerGraphNavigator($this->metadataFactory, $this->handlerRegistry, $this->dispatcher);
+        }
     }
 }

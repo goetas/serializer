@@ -94,6 +94,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
     public function testNavigatorPassesNullOnDeserialization()
     {
+        $this->context = $this->getMock('JMS\Serializer\DeserializationContext');
         $class = __NAMESPACE__.'\SerializableClass';
         $metadata = $this->metadataFactory->getMetadataForClass($class);
 
@@ -123,7 +124,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('getVisitor')
             ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
 
-        $navigator = $this->navigatorFactory->getGraphNavigator();
+        $navigator = $this->navigatorFactory->getGraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION);
         $navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
     }
 
@@ -154,7 +155,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->context = $this->getMock('JMS\Serializer\Context');
+        $this->context = $this->getMock('JMS\Serializer\SerializationContext');
         $this->dispatcher = new EventDispatcher();
         $this->handlerRegistry = new HandlerRegistry();
         $this->objectConstructor = new UnserializeObjectConstructor();

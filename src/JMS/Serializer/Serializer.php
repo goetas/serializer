@@ -45,7 +45,10 @@ class Serializer implements SerializerInterface
     /** @var \PhpCollection\MapInterface */
     private $deserializationVisitors;
 
-    private $navigator;
+    /**
+     * @var GraphNavigatorFactory
+     */
+    private $navigatorFactory;
 
     /**
      * Constructor.

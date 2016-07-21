@@ -48,13 +48,13 @@ final class SerializerGraphNavigator extends GraphNavigator
      * Called for each node of the graph that is being traversed.
      *
      * @param mixed $data the data depends on the direction, and type of visitor
-     * @param null|array $type array has the format ["name" => string, "params" => array]
+     * @param null|TypeDefinition $type array has the format ["name" => string, "params" => array]
      *
      * @param Context $context
      * @return mixed the return value depends on the direction, and type of visitor
      * @throws \Exception
      */
-    public function accept($data, array $type = null, Context $context)
+    public function accept($data, TypeDefinition $type = null, Context $context)
     {
         if (!$context instanceof SerializationContext) throw new \Exception("sss");
         $visitor = $context->getVisitor();
@@ -67,14 +67,13 @@ final class SerializerGraphNavigator extends GraphNavigator
                 $typeName = get_class($data);
             }
 
-            $type = array('name' => $typeName, 'params' => array());
+            $type = new TypeDefinition($typeName);
         } elseif (null === $data) {
             // If the data is null, we have to force the type to null regardless of the input in order to
             // guarantee correct handling of null values, and not have any internal auto-casting behavior.
-            $type = array('name' => 'NULL', 'params' => array());
+            $type = new TypeDefinition('NULL');
         }
-
-        switch ($type['name']) {
+        switch ($type->getName()) {
             case 'NULL':
                 return $visitor->visitNull($data, $type, $context);
 
@@ -114,18 +113,18 @@ final class SerializerGraphNavigator extends GraphNavigator
 
                 // If we're serializing a polymorphic type, then we'll be interested in the
                 // metadata for the actual type of the object, not the base class.
-                if (class_exists($type['name'], false) || interface_exists($type['name'], false)) {
-                    if (is_subclass_of($data, $type['name'], false)) {
-                        $type = array('name' => get_class($data), 'params' => array());
+                if (class_exists($type->getName(), false) || interface_exists($type->getName(), false)) {
+                    if (is_subclass_of($data, $type->getName(), false)) {
+                        $type = new TypeDefinition(get_class($data));
                     }
                 }
 
 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($this->hasListener('pre', $type['name'], $context)) {
+                if ($this->hasListener('pre', $type->getName(), $context)) {
                     $event = new PreSerializeEvent($context, $data, $type);
-                    $this->dispatch('pre', $type['name'], $context, $event);
+                    $this->dispatch('pre', $type->getName(), $context, $event);
 
                     $type = $event->getType();
 
@@ -133,7 +132,7 @@ final class SerializerGraphNavigator extends GraphNavigator
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
-                if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
+                if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type->getName(), $context->getFormat())) {
                     $rs = call_user_func($handler, $visitor, $data, $type, $context);
                     $this->leaveScope($context, $data);
 
@@ -143,7 +142,7 @@ final class SerializerGraphNavigator extends GraphNavigator
                 $exclusionStrategy = $context->getExclusionStrategy();
 
                 /** @var $metadata ClassMetadata */
-                $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+                $metadata = $this->metadataFactory->getMetadataForClass($type->getName());
 
                 if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
                     $this->leaveScope($context, $data);

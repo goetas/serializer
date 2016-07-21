@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\TypeDefinition;
 use Metadata\Driver\FileLocator;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\Driver\XmlDriver;
@@ -66,7 +67,7 @@ class XmlDriverTest extends BaseDriverTest
         $m = $this->getDriver('case')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $p = new PropertyMetadata($m->name, 'title');
-        $p->type = array('name' => 'string', 'params' => array());
+        $p->type = new TypeDefinition('string');
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 
@@ -75,7 +76,7 @@ class XmlDriverTest extends BaseDriverTest
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\GetSetObject'));
 
         $p = new PropertyMetadata($m->name, 'name');
-        $p->type = array('name' => 'string', 'params' => array());
+        $p->type = new TypeDefinition('string');
         $p->getter = 'getTrimmedName';
         $p->setter = 'setCapitalizedName';
 

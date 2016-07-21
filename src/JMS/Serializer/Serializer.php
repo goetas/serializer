@@ -165,7 +165,7 @@ class Serializer implements SerializerInterface
         ;
     }
 
-    private function visit(VisitorInterface $visitor, Context $context, $data, $format, array $type = null)
+    private function visit(VisitorInterface $visitor, Context $context, $data, $format, TypeDefinition $type = null)
     {
         $navigator = $this->navigatorFactory->getGraphNavigator($context instanceof DeserializationContext ? GraphNavigator::DIRECTION_DESERIALIZATION : GraphNavigator::DIRECTION_SERIALIZATION);
         $context->initialize(

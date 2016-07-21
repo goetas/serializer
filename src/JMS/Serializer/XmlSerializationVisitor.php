@@ -87,7 +87,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->navigator;
     }
 
-    public function visitNull($data, array $type, Context $context)
+    public function visitNull($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -107,7 +107,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $node;
     }
 
-    public function visitString($data, array $type, Context $context)
+    public function visitString($data, TypeDefinition $type, Context $context)
     {
 
         if (null !== $this->currentMetadata) {
@@ -126,7 +126,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $doCData ? $this->document->createCDATASection($data) : $this->document->createTextNode((string) $data);
     }
 
-    public function visitSimpleString($data, array $type, Context $context)
+    public function visitSimpleString($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -138,7 +138,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->document->createTextNode((string) $data);
     }
 
-    public function visitBoolean($data, array $type, Context $context)
+    public function visitBoolean($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -150,17 +150,17 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->document->createTextNode($data ? 'true' : 'false');
     }
 
-    public function visitInteger($data, array $type, Context $context)
+    public function visitInteger($data, TypeDefinition $type, Context $context)
     {
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitDouble($data, array $type, Context $context)
+    public function visitDouble($data, TypeDefinition $type, Context $context)
     {
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -189,7 +189,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function startVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
         $this->objectMetadataStack->push($metadata);
 
@@ -304,7 +304,7 @@ class XmlSerializationVisitor extends AbstractVisitor
             $this->revertCurrentNode();
 
             if ($element->hasChildNodes() || $element->hasAttributes()
-                || (isset($metadata->type['name']) && $metadata->type['name'] === 'array' && isset($metadata->type['params'][1]))) {
+                || (!empty($metadata->type) && $metadata->type->getName() === 'array' && isset($metadata->type->getParams()[1]))) {
                 $this->currentNode->appendChild($element);
             }
         }
@@ -312,7 +312,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->hasValue = false;
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
         $this->objectMetadataStack->pop();
     }
@@ -384,7 +384,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    private function visitNumeric($data, array $type)
+    private function visitNumeric($data, TypeDefinition $type)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);

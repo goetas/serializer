@@ -36,7 +36,7 @@ class DoctrineProxySubscriber implements EventSubscriberInterface
         // If the set type name is not an actual class, but a faked type for which a custom handler exists, we do not
         // modify it with this subscriber. Also, we forgo autoloading here as an instance of this type is already created,
         // so it must be loaded if its a real class.
-        $virtualType = ! class_exists($type['name'], false);
+        $virtualType = ! class_exists($type->getName(), false);
 
         if ($object instanceof PersistentCollection
             || $object instanceof MongoDBPersistentCollection

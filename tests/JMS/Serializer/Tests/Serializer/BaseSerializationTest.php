@@ -34,6 +34,7 @@ use JMS\Serializer\Tests\Fixtures\Tag;
 use JMS\Serializer\Tests\Fixtures\Timestamp;
 use JMS\Serializer\Tests\Fixtures\Tree;
 use JMS\Serializer\Tests\Fixtures\VehicleInterfaceGarage;
+use JMS\Serializer\TypeDefinition;
 use PhpCollection\Sequence;
 use Symfony\Component\Form\FormFactoryBuilder;
 use Symfony\Component\Translation\MessageSelector;
@@ -989,18 +990,16 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
-            function(VisitorInterface $visitor, $object, array $type, Context $context) {
+            function(VisitorInterface $visitor, $object, TypeDefinition $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($object), $type, $context);
             }
         );
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_DESERIALIZATION, 'AuthorList', $this->getFormat(),
-            function(VisitorInterface $visitor, $data, $type, Context $context) {
-                $type = array(
-                    'name' => 'array',
-                    'params' => array(
-                        array('name' => 'integer', 'params' => array()),
-                        array('name' => 'JMS\Serializer\Tests\Fixtures\Author', 'params' => array()),
-                    ),
+            function(VisitorInterface $visitor, $data, TypeDefinition $type, Context $context) {
+                $type = new TypeDefinition('array', array(
+                            new TypeDefinition('integer'),
+                            new TypeDefinition('JMS\Serializer\Tests\Fixtures\Author'),
+                    )
                 );
 
                 $elements = $visitor->getNavigator()->accept($data, $type, $context);

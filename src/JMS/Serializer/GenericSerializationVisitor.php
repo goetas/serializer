@@ -44,12 +44,12 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         return $this->navigator;
     }
 
-    public function visitNull($data, array $type, Context $context)
+    public function visitNull($data, TypeDefinition $type, Context $context)
     {
         return null;
     }
 
-    public function visitString($data, array $type, Context $context)
+    public function visitString($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->root) {
             $this->root = $data;
@@ -58,7 +58,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         return (string) $data;
     }
 
-    public function visitBoolean($data, array $type, Context $context)
+    public function visitBoolean($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->root) {
             $this->root = $data;
@@ -67,7 +67,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         return (boolean) $data;
     }
 
-    public function visitInteger($data, array $type, Context $context)
+    public function visitInteger($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->root) {
             $this->root = $data;
@@ -76,7 +76,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         return (int) $data;
     }
 
-    public function visitDouble($data, array $type, Context $context)
+    public function visitDouble($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->root) {
             $this->root = $data;
@@ -87,9 +87,9 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
 
     /**
      * @param array $data
-     * @param array $type
+     * @param TypeDefinition $type
      */
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->root) {
             $this->root = array();
@@ -98,7 +98,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = array();
         }
 
-        $isList = isset($type['params'][0]) && ! isset($type['params'][1]);
+        $isList = isset($type->getParams()[0]) && ! isset($type->getParams()[1]);
 
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);
@@ -117,7 +117,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         return $rs;
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function startVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
         if (null === $this->root) {
             $this->root = new \stdClass;
@@ -127,7 +127,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $this->data = array();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
         $rs = $this->data;
         $this->data = $this->dataStack->pop();

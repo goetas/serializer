@@ -20,6 +20,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\JsonDeserializationVisitor;
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;
@@ -64,7 +65,7 @@ class DateHandler implements SubscribingHandlerInterface
         $this->xmlCData = $xmlCData;
     }
 
-    public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, array $type, Context $context)
+    public function serializeDateTime(VisitorInterface $visitor, \DateTime $date, TypeDefinition $type, Context $context)
     {
         if ($visitor instanceof XmlSerializationVisitor && false === $this->xmlCData) {
             return $visitor->visitSimpleString($date->format($this->getFormat($type)), $type, $context);
@@ -78,7 +79,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $visitor->visitString($date->format($this->getFormat($type)), $type, $context);
     }
 
-    public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, array $type, Context $context)
+    public function serializeDateInterval(VisitorInterface $visitor, \DateInterval $date, TypeDefinition $type, Context $context)
     {
         $iso8601DateIntervalString = $this->format($date);
 
@@ -89,7 +90,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $visitor->visitString($iso8601DateIntervalString, $type, $context);
     }
 
-    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
+    public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, TypeDefinition $type)
     {
         $attributes = $data->attributes('xsi', true);
         if (isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') {
@@ -99,7 +100,7 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type);
     }
 
-    public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
+    public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, TypeDefinition $type)
     {
         if (null === $data) {
             return null;
@@ -108,9 +109,9 @@ class DateHandler implements SubscribingHandlerInterface
         return $this->parseDateTime($data, $type);
     }
 
-    private function parseDateTime($data, array $type)
+    private function parseDateTime($data, TypeDefinition $type)
     {
-        $timezone = isset($type['params'][1]) ? new \DateTimeZone($type['params'][1]) : $this->defaultTimezone;
+        $timezone = isset($type->getParams()[1]) ? new \DateTimeZone($type->getParams()[1]) : $this->defaultTimezone;
         $format = $this->getFormat($type);
         $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
         if (false === $datetime) {
@@ -122,11 +123,11 @@ class DateHandler implements SubscribingHandlerInterface
 
     /**
      * @return string
-     * @param array $type
+     * @param TypeDefinition $type
      */
-    private function getFormat(array $type)
+    private function getFormat(TypeDefinition $type)
     {
-        return isset($type['params'][0]) ? $type['params'][0] : $this->defaultFormat;
+        return isset($type->getParams()[0]) ? $type->getParams()[0] : $this->defaultFormat;
     }
 
     /**

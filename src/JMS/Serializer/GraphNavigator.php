@@ -91,11 +91,11 @@ abstract class GraphNavigator
      * Called for each node of the graph that is being traversed.
      *
      * @param mixed $data the data depends on the direction, and type of visitor
-     * @param null|array $type array has the format ["name" => string, "params" => array]
+     * @param null|TypeDefinition $type array has the format ["name" => string, "params" => array]
      *
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public abstract function accept($data, array $type = null, Context $context);
+    public abstract function accept($data, TypeDefinition $type = null, Context $context);
     protected abstract function leaveScope(Context $context, $data);
 
     protected function hasListener($type, $typeName, Context $context)
@@ -112,14 +112,14 @@ abstract class GraphNavigator
         $this->dispatcher->dispatch('serializer.'.$type.'_'.$eventName, $typeName, $context->getFormat(), $event);
     }
 
-    protected function afterVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
+    protected function afterVisitingObject(ClassMetadata $metadata, $object, TypeDefinition $type, Context $context)
     {
         $this->leaveScope($context, $object);
         $context->popClassMetadata();
 
         $this->callLifecycleMethods('post', $metadata, $context, $object);
 
-        if ($this->hasListener('post', $type['name'], $context)) {
+        if ($this->hasListener('post', $type->getName(), $context)) {
             $this->dispatch('post', $metadata->name, $context, new ObjectEvent($context, $object, $type));
         }
     }

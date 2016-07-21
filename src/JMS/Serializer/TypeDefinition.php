@@ -16,18 +16,41 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\EventDispatcher;
+namespace JMS\Serializer;
 
-use JMS\Serializer\TypeDefinition;
-
-class PreSerializeEvent extends ObjectEvent
+/**
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
+final class TypeDefinition
 {
-    /**
-     * @param string $typeName
-     * @param array $params
-     */
-    public function setType($typeName, array $params = array())
+    protected $name;
+    protected $params = array();
+
+
+    public function __construct($name, array $params = array())
     {
-        $this->type = new TypeDefinition($typeName, $params);
+        $this->name = $name;
+        $this->params = $params;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return array|TypeDefinition[]
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    public static function getUnknown()
+    {
+        return new self('UNKNOWN');
     }
 }

@@ -26,6 +26,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AnnotationDriver;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\TypeDefinition;
 use Metadata\MetadataFactory;
 
 class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
@@ -125,7 +126,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
 
         $navigator = $this->navigatorFactory->getGraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION);
-        $navigator->accept('random', array('name' => $class, 'params' => array()), $this->context);
+        $navigator->accept('random', new TypeDefinition($class), $this->context);
     }
 
     public function testNavigatorChangeTypeOnSerialization()
@@ -135,8 +136,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->dispatcher->addListener('serializer.pre_serialize', function($event) use ($typeName) {
             $type = $event->getType();
-            $type['name'] = $typeName;
-            $event->setType($type['name'], $type['params']);
+            $event->setType($typeName, $type->getParams());
         });
 
         $this->handlerRegistry->registerSubscribingHandler(new TestSubscribingHandler());

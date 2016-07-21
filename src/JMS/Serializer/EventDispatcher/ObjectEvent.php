@@ -19,12 +19,13 @@
 namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\TypeDefinition;
 
 class ObjectEvent extends Event
 {
     private $object;
 
-    public function __construct(Context $context, $object, array $type)
+    public function __construct(Context $context, $object, TypeDefinition $type)
     {
         parent::__construct($context, $type);
 

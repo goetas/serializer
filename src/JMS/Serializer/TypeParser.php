@@ -83,7 +83,8 @@ final class TypeParser extends \JMS\Parser\AbstractParser
     {
         $typeName = $this->match(self::T_NAME);
         if ( ! $this->lexer->isNext(self::T_OPEN_BRACKET)) {
-            return array('name' => $typeName, 'params' => array());
+
+            return new TypeDefinition($typeName);
         }
 
         $this->match(self::T_OPEN_BRACKET);
@@ -99,7 +100,7 @@ final class TypeParser extends \JMS\Parser\AbstractParser
         } while ($this->lexer->isNext(self::T_COMMA) && $this->lexer->moveNext());
 
         $this->match(self::T_CLOSE_BRACKET);
-
-        return array('name' => $typeName, 'params' => $params);
+        
+        return new TypeDefinition($typeName, $params);
     }
 }

@@ -19,12 +19,13 @@
 namespace JMS\Serializer\EventDispatcher;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\TypeDefinition;
 
 class PreDeserializeEvent extends Event
 {
     private $data;
 
-    public function __construct(DeserializationContext $context, $data, array $type)
+    public function __construct(DeserializationContext $context, $data, TypeDefinition $type)
     {
         parent::__construct($context, $type);
 

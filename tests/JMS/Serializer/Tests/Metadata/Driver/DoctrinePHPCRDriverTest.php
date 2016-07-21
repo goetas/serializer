@@ -24,6 +24,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\PHPCR\Configuration;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\Mapping\Driver\AnnotationDriver as DoctrinePHPCRDriver;
+use JMS\Serializer\TypeDefinition;
 
 class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -38,8 +39,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
     public function testTypelessPropertyIsGivenTypeFromDoctrineMetadata()
     {
         $metadata = $this->getMetadata();
-        $this->assertEquals(
-            array('name'=> 'DateTime', 'params' => array()),
+        $this->assertEquals(new TypeDefinition('DateTime'),
             $metadata->propertyMetadata['createdAt']->type
         );
     }
@@ -48,7 +48,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
     {
         $metadata = $this->getMetadata();
         $this->assertEquals(
-            array('name'=> 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author', 'params' => array()),
+            new TypeDefinition('JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Author'),
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -58,9 +58,9 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name'=> 'ArrayCollection', 'params' => array(
-                array('name' => 'JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment', 'params' => array()))
-            ),
+            new TypeDefinition('ArrayCollection', array(
+                new TypeDefinition('JMS\Serializer\Tests\Fixtures\DoctrinePHPCR\Comment')
+            )),
             $metadata->propertyMetadata['comments']->type
         );
     }
@@ -71,7 +71,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
 
         // This would be guessed as boolean but we've overridden it to integer
         $this->assertEquals(
-            array('name'=> 'integer', 'params' => array()),
+            new TypeDefinition('integer'),
             $metadata->propertyMetadata['published']->type
         );
     }

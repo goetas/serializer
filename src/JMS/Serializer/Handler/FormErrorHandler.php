@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Handler;
 
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\GraphNavigator;
@@ -55,7 +56,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         $this->translator = $translator;
     }
 
-    public function serializeFormToXml(XmlSerializationVisitor $visitor, Form $form, array $type)
+    public function serializeFormToXml(XmlSerializationVisitor $visitor, Form $form, TypeDefinition $type)
     {
         if (null === $visitor->document) {
             $visitor->document = $visitor->createDocument(null, null, false);
@@ -72,13 +73,13 @@ class FormErrorHandler implements SubscribingHandlerInterface
         $formNode->appendChild($errorsNode = $visitor->document->createElement('errors'));
         foreach ($form->getErrors() as $error) {
             $errorNode = $visitor->document->createElement('entry');
-            $errorNode->appendChild($this->serializeFormErrorToXml($visitor, $error, array()));
+            $errorNode->appendChild($this->serializeFormErrorToXml($visitor, $error, TypeDefinition::getUnknown()));
             $errorsNode->appendChild($errorNode);
         }
 
         foreach ($form->all() as $child) {
             if ($child instanceof Form) {
-                if (null !== $node = $this->serializeFormToXml($visitor, $child, array())) {
+                if (null !== $node = $this->serializeFormToXml($visitor, $child, TypeDefinition::getUnknown())) {
                     $formNode->appendChild($node);
                 }
             }
@@ -87,17 +88,17 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $formNode;
     }
 
-    public function serializeFormToJson(JsonSerializationVisitor $visitor, Form $form, array $type)
+    public function serializeFormToJson(JsonSerializationVisitor $visitor, Form $form, TypeDefinition $type)
     {
         return $this->convertFormToArray($visitor, $form);
     }
 
-    public function serializeFormToYml(YamlSerializationVisitor $visitor, Form $form, array $type)
+    public function serializeFormToYml(YamlSerializationVisitor $visitor, Form $form, TypeDefinition $type)
     {
         return $this->convertFormToArray($visitor, $form);
     }
 
-    public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, array $type)
+    public function serializeFormErrorToXml(XmlSerializationVisitor $visitor, FormError $formError, TypeDefinition $type)
     {
         if (null === $visitor->document) {
             $visitor->document = $visitor->createDocument(null, null, true);
@@ -106,12 +107,12 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $visitor->document->createCDATASection($this->getErrorMessage($formError));
     }
 
-    public function serializeFormErrorToJson(JsonSerializationVisitor $visitor, FormError $formError, array $type)
+    public function serializeFormErrorToJson(JsonSerializationVisitor $visitor, FormError $formError, TypeDefinition $type)
     {
         return $this->getErrorMessage($formError);
     }
 
-    public function serializeFormErrorToYml(YamlSerializationVisitor $visitor, FormError $formError, array $type)
+    public function serializeFormErrorToYml(YamlSerializationVisitor $visitor, FormError $formError, TypeDefinition $type)
     {
         return $this->getErrorMessage($formError);
     }

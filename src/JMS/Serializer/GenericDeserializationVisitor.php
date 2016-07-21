@@ -51,12 +51,12 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $this->decode($data);
     }
 
-    public function visitNull($data, array $type, Context $context)
+    public function visitNull($data, TypeDefinition $type, Context $context)
     {
         return null;
     }
 
-    public function visitString($data, array $type, Context $context)
+    public function visitString($data, TypeDefinition $type, Context $context)
     {
         $data = (string) $data;
 
@@ -67,7 +67,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitBoolean($data, array $type, Context $context)
+    public function visitBoolean($data, TypeDefinition $type, Context $context)
     {
         $data = (Boolean) $data;
 
@@ -78,7 +78,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitInteger($data, array $type, Context $context)
+    public function visitInteger($data, TypeDefinition $type, Context $context)
     {
         $data = (integer) $data;
 
@@ -89,7 +89,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitDouble($data, array $type, Context $context)
+    public function visitDouble($data, TypeDefinition $type, Context $context)
     {
         $data = (double) $data;
 
@@ -100,14 +100,14 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray($data, TypeDefinition $type, Context $context)
     {
         if ( ! is_array($data)) {
             throw new RuntimeException(sprintf('Expected array, but got %s: %s', gettype($data), json_encode($data)));
         }
 
         // If no further parameters were given, keys/values are just passed as is.
-        if ( ! $type['params']) {
+        if ( ! $type->getParams()) {
             if (null === $this->result) {
                 $this->result = $data;
             }
@@ -115,9 +115,9 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
             return $data;
         }
 
-        switch (count($type['params'])) {
+        switch (count($type->getParams())) {
             case 1: // Array is a list.
-                $listType = $type['params'][0];
+                $listType = $type->getParams()[0];
 
                 $result = array();
                 if (null === $this->result) {
@@ -131,7 +131,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
                 return $result;
 
             case 2: // Array is a map.
-                list($keyType, $entryType) = $type['params'];
+                list($keyType, $entryType) = $type->getParams();
 
                 $result = array();
                 if (null === $this->result) {
@@ -149,7 +149,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
+    public function startVisitingObject(ClassMetadata $metadata, $object, TypeDefinition $type, Context $context)
     {
         $this->setCurrentObject($object);
 
@@ -175,7 +175,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
         $metadata->setValue($this->currentObject, $v);
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
         $obj = $this->currentObject;
         $this->revertCurrentObject();

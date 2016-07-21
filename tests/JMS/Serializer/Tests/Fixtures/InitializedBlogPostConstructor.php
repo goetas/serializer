@@ -24,6 +24,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 
 use JMS\Serializer\Tests\Fixtures\Author;
@@ -32,9 +33,9 @@ use JMS\Serializer\Construction\UnserializeObjectConstructor;
 
 class InitializedBlogPostConstructor extends UnserializeObjectConstructor
 {
-    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, array $type, DeserializationContext $context)
+    public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, TypeDefinition $type, DeserializationContext $context)
     {
-        if ($type['name'] !== 'JMS\Serializer\Tests\Fixtures\BlogPost') {
+        if ($type->getName() !== 'JMS\Serializer\Tests\Fixtures\BlogPost') {
             return parent::construct($visitor, $metadata, $data, $type);
         }
 

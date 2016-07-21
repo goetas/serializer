@@ -54,7 +54,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $this->metadataStack = new \SplStack;
     }
 
-    public function visitNull($data, array $type, Context $context)
+    public function visitNull($data, TypeDefinition $type, Context $context)
     {
         if ('' === $this->writer->content) {
             $this->writer->writeln('null');
@@ -63,7 +63,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         return 'null';
     }
 
-    public function visitString($data, array $type, Context $context)
+    public function visitString($data, TypeDefinition $type, Context $context)
     {
         $v = Inline::dump($data);
 
@@ -76,12 +76,12 @@ class YamlSerializationVisitor extends AbstractVisitor
 
     /**
      * @param array $data
-     * @param array $type
+     * @param TypeDefinition $type
      */
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray($data, TypeDefinition $type, Context $context)
     {
         $count = $this->writer->changeCount;
-        $isList = (isset($type['params'][0]) && ! isset($type['params'][1]))
+        $isList = (isset($type->getParams()[0]) && ! isset($type->getParams()[1]))
             || array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
@@ -107,7 +107,7 @@ class YamlSerializationVisitor extends AbstractVisitor
             $this->writer->outdent();
         }
 
-        if ($count === $this->writer->changeCount && isset($type['params'][1])) {
+        if ($count === $this->writer->changeCount && isset($type->getParams()[1])) {
             $this->writer
                 ->rtrim(false)
                 ->writeln(' {}')
@@ -120,7 +120,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         }
     }
 
-    public function visitBoolean($data, array $type, Context $context)
+    public function visitBoolean($data, TypeDefinition $type, Context $context)
     {
         $v = $data ? 'true' : 'false';
 
@@ -131,7 +131,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $v;
     }
 
-    public function visitDouble($data, array $type, Context $context)
+    public function visitDouble($data, TypeDefinition $type, Context $context)
     {
         $v = (string) $data;
 
@@ -142,7 +142,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $v;
     }
 
-    public function visitInteger($data, array $type, Context $context)
+    public function visitInteger($data, TypeDefinition $type, Context $context)
     {
         $v = (string) $data;
 
@@ -153,7 +153,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $v;
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function startVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
     }
 
@@ -192,7 +192,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         $this->revertCurrentMetadata();
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
     }
 

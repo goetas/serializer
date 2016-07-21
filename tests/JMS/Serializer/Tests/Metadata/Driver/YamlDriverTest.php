@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\TypeDefinition;
 use Metadata\Driver\FileLocator;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Metadata\Driver\YamlDriver;
@@ -67,7 +68,7 @@ class YamlDriverTest extends BaseDriverTest
         $m = $this->getDriverForSubDir('case')->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\BlogPost'));
 
         $p = new PropertyMetadata($m->name, 'title');
-        $p->type = array('name' => 'string', 'params' => array());
+        $p->type = new TypeDefinition('string');
         $this->assertEquals($p, $m->propertyMetadata['title']);
     }
 

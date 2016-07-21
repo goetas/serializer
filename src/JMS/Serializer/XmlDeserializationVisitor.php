@@ -83,12 +83,12 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $doc;
     }
 
-    public function visitNull($data, array $type, Context $context)
+    public function visitNull($data, TypeDefinition $type, Context $context)
     {
         return null;
     }
 
-    public function visitString($data, array $type, Context $context)
+    public function visitString($data, TypeDefinition $type, Context $context)
     {
         $data = (string) $data;
 
@@ -99,7 +99,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitBoolean($data, array $type, Context $context)
+    public function visitBoolean($data, TypeDefinition $type, Context $context)
     {
         $data = (string) $data;
 
@@ -118,7 +118,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitInteger($data, array $type, Context $context)
+    public function visitInteger($data, TypeDefinition $type, Context $context)
     {
         $data = (integer) $data;
 
@@ -129,7 +129,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitDouble($data, array $type, Context $context)
+    public function visitDouble($data, TypeDefinition $type, Context $context)
     {
         $data = (double) $data;
 
@@ -140,7 +140,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray($data, TypeDefinition $type, Context $context)
     {
         $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
         $namespace = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryNamespace ? $this->currentMetadata->xmlEntryNamespace : null;
@@ -158,7 +158,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
             return array();
         }
 
-        switch (count($type['params'])) {
+        switch (count($type->getParams())) {
             case 0:
                 throw new RuntimeException(sprintf('The array type must be specified either as "array<T>", or "array<K,V>".'));
 
@@ -171,7 +171,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
                 $nodes = $data->children($namespace)->$entryName;
                 foreach ($nodes as $v) {
-                    $result[] = $this->navigator->accept($v, $type['params'][0], $context);
+                    $result[] = $this->navigator->accept($v, $type->getParams()[0], $context);
                 }
 
                 return $result;
@@ -181,7 +181,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
                     throw new RuntimeException('Maps are not supported on top-level without metadata.');
                 }
 
-                list($keyType, $entryType) = $type['params'];
+                list($keyType, $entryType) = $type->getParams();
                 $result = array();
                 if (null === $this->result) {
                     $this->result = &$result;
@@ -201,11 +201,11 @@ class XmlDeserializationVisitor extends AbstractVisitor
                 return $result;
 
             default:
-                throw new LogicException(sprintf('The array type does not support more than 2 parameters, but got %s.', json_encode($type['params'])));
+                throw new LogicException(sprintf('The array type does not support more than 2 parameters, but got %s.', json_encode($type->getParams())));
         }
     }
 
-    public function startVisitingObject(ClassMetadata $metadata, $object, array $type, Context $context)
+    public function startVisitingObject(ClassMetadata $metadata, $object, TypeDefinition $type, Context $context)
     {
         $this->setCurrentObject($object);
         $this->objectMetadataStack->push($metadata);
@@ -284,7 +284,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $metadata->setValue($this->currentObject, $v);
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
         $rs = $this->currentObject;
         $this->objectMetadataStack->pop();

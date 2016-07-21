@@ -20,6 +20,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 use PhpCollection\Map;
 use PhpCollection\Sequence;
@@ -56,32 +57,32 @@ class PhpCollectionHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function serializeMap(VisitorInterface $visitor, Map $map, array $type, Context $context)
+    public function serializeMap(VisitorInterface $visitor, Map $map, TypeDefinition $type, Context $context)
     {
-        $type['name'] = 'array';
+        $type = new TypeDefinition('array', $type->getParams());
 
         return $visitor->visitArray(iterator_to_array($map), $type, $context);
     }
 
-    public function deserializeMap(VisitorInterface $visitor, $data, array $type, Context $context)
+    public function deserializeMap(VisitorInterface $visitor, $data, TypeDefinition $type, Context $context)
     {
-        $type['name'] = 'array';
+        $type = new TypeDefinition('array', $type->getParams());
 
         return new Map($visitor->visitArray($data, $type, $context));
     }
 
-    public function serializeSequence(VisitorInterface $visitor, Sequence $sequence, array $type, Context $context)
+    public function serializeSequence(VisitorInterface $visitor, Sequence $sequence, TypeDefinition $type, Context $context)
     {
         // We change the base type, and pass through possible parameters.
-        $type['name'] = 'array';
+        $type = new TypeDefinition('array', $type->getParams());
 
         return $visitor->visitArray($sequence->all(), $type, $context);
     }
 
-    public function deserializeSequence(VisitorInterface $visitor, $data, array $type, Context $context)
+    public function deserializeSequence(VisitorInterface $visitor, $data, TypeDefinition $type, Context $context)
     {
         // See above.
-        $type['name'] = 'array';
+        $type = new TypeDefinition('array', $type->getParams());
 
         return new Sequence($visitor->visitArray($data, $type, $context));
     }

@@ -19,6 +19,7 @@
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\YamlSerializationVisitor;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\GraphNavigator;
@@ -48,7 +49,7 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function serializeListToXml(XmlSerializationVisitor $visitor, ConstraintViolationList $list, array $type)
+    public function serializeListToXml(XmlSerializationVisitor $visitor, ConstraintViolationList $list, TypeDefinition $type)
     {
         if (null === $visitor->document) {
             $visitor->document = $visitor->createDocument();
@@ -59,17 +60,17 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         }
     }
 
-    public function serializeListToJson(JsonSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
+    public function serializeListToJson(JsonSerializationVisitor $visitor, ConstraintViolationList $list, TypeDefinition $type, Context $context)
     {
         return $visitor->visitArray(iterator_to_array($list), $type, $context);
     }
 
-    public function serializeListToYml(YamlSerializationVisitor $visitor, ConstraintViolationList $list, array $type, Context $context)
+    public function serializeListToYml(YamlSerializationVisitor $visitor, ConstraintViolationList $list, TypeDefinition $type, Context $context)
     {
         return $visitor->visitArray(iterator_to_array($list), $type, $context);
     }
 
-    public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
+    public function serializeViolationToXml(XmlSerializationVisitor $visitor, ConstraintViolation $violation, TypeDefinition $type = null)
     {
         if (null === $visitor->document) {
             $visitor->document = $visitor->createDocument(null, null, false);
@@ -87,7 +88,7 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         $messageNode->appendChild($visitor->document->createCDATASection($violation->getMessage()));
     }
 
-    public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
+    public function serializeViolationToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation, TypeDefinition $type = null)
     {
         $data = array(
             'property_path' => $violation->getPropertyPath(),
@@ -101,7 +102,7 @@ class ConstraintViolationHandler implements SubscribingHandlerInterface
         return $data;
     }
 
-    public function serializeViolationToYml(YamlSerializationVisitor $visitor, ConstraintViolation $violation, array $type = null)
+    public function serializeViolationToYml(YamlSerializationVisitor $visitor, ConstraintViolation $violation, TypeDefinition $type = null)
     {
         return array(
             'property_path' => $violation->getPropertyPath(),

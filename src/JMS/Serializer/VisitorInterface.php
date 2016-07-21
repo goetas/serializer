@@ -43,62 +43,62 @@ interface VisitorInterface
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitNull($data, array $type, Context $context);
+    public function visitNull($data, TypeDefinition $type, Context $context);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitString($data, array $type, Context $context);
+    public function visitString($data, TypeDefinition $type, Context $context);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitBoolean($data, array $type, Context $context);
+    public function visitBoolean($data, TypeDefinition $type, Context $context);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitDouble($data, array $type, Context $context);
+    public function visitDouble($data, TypeDefinition $type, Context $context);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitInteger($data, array $type, Context $context);
+    public function visitInteger($data, TypeDefinition $type, Context $context);
 
     /**
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function visitArray($data, array $type, Context $context);
+    public function visitArray($data, TypeDefinition $type, Context $context);
 
     /**
      * Called before the properties of the object are being visited.
      *
      * @param ClassMetadata $metadata
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return void
      */
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context);
+    public function startVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context);
 
     /**
      * @param PropertyMetadata $metadata
@@ -113,11 +113,11 @@ interface VisitorInterface
      *
      * @param ClassMetadata $metadata
      * @param mixed $data
-     * @param array $type
+     * @param TypeDefinition $type
      *
      * @return mixed
      */
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context);
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context);
 
     /**
      * Called before serialization/deserialization starts.

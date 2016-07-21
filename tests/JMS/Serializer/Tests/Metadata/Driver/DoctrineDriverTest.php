@@ -24,6 +24,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
+use JMS\Serializer\TypeDefinition;
 
 class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,17 +40,14 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     {
         $metadata = $this->getMetadata();
 
-        $this->assertEquals(
-            array('name'=> 'DateTime', 'params' => array()),
-            $metadata->propertyMetadata['createdAt']->type
-        );
+        $this->assertEquals(new TypeDefinition('DateTime'),$metadata->propertyMetadata['createdAt']->type);
     }
 
     public function testSingleValuedAssociationIsProperlyHinted()
     {
         $metadata = $this->getMetadata();
         $this->assertEquals(
-            array('name'=> 'JMS\Serializer\Tests\Fixtures\Doctrine\Author', 'params' => array()),
+            new TypeDefinition('JMS\Serializer\Tests\Fixtures\Doctrine\Author'),
             $metadata->propertyMetadata['author']->type
         );
     }
@@ -59,8 +57,8 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $metadata = $this->getMetadata();
 
         $this->assertEquals(
-            array('name'=> 'ArrayCollection', 'params' => array(
-                array('name' => 'JMS\Serializer\Tests\Fixtures\Doctrine\Comment', 'params' => array()))
+            new TypeDefinition('ArrayCollection', array(
+                new TypeDefinition('JMS\Serializer\Tests\Fixtures\Doctrine\Comment'))
             ),
             $metadata->propertyMetadata['comments']->type
         );
@@ -72,7 +70,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
         // This would be guessed as boolean but we've overriden it to integer
         $this->assertEquals(
-            array('name'=> 'integer', 'params' => array()),
+            new TypeDefinition('integer'),
             $metadata->propertyMetadata['published']->type
         );
     }

@@ -21,6 +21,7 @@ namespace JMS\Serializer\Handler;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
@@ -60,18 +61,18 @@ class ArrayCollectionHandler implements SubscribingHandlerInterface
         return $methods;
     }
 
-    public function serializeCollection(VisitorInterface $visitor, Collection $collection, array $type, Context $context)
+    public function serializeCollection(VisitorInterface $visitor, Collection $collection, TypeDefinition $type, Context $context)
     {
         // We change the base type, and pass through possible parameters.
-        $type['name'] = 'array';
+        $type = new TypeDefinition('array', $type->getParams());
 
         return $visitor->visitArray($collection->toArray(), $type, $context);
     }
 
-    public function deserializeCollection(VisitorInterface $visitor, $data, array $type, Context $context)
+    public function deserializeCollection(VisitorInterface $visitor, $data, TypeDefinition $type, Context $context)
     {
         // See above.
-        $type['name'] = 'array';
+        $type = new TypeDefinition('array', $type->getParams());
 
         return new ArrayCollection($visitor->visitArray($data, $type, $context));
     }

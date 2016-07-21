@@ -21,6 +21,7 @@ namespace JMS\Serializer\Tests\Serializer\EventDispatcher\Subscriber;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 
 class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
@@ -33,19 +34,19 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testRewritesProxyClassName()
     {
-        $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), array('name' => get_class($obj), 'params' => array()));
+        $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), new TypeDefinition(get_class($obj)));
         $this->subscriber->onPreSerialize($event);
 
-        $this->assertEquals(array('name' => get_parent_class($obj), 'params' => array()), $event->getType());
+        $this->assertEquals(new TypeDefinition(get_parent_class($obj)), $event->getType());
         $this->assertTrue($obj->__isInitialized());
     }
 
     public function testDoesNotRewriteCustomType()
     {
-        $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), array('name' => 'FakedName', 'params' => array()));
+        $event = $this->createEvent($obj = new SimpleObjectProxy('a', 'b'), new TypeDefinition('FakedName'));
         $this->subscriber->onPreSerialize($event);
 
-        $this->assertEquals(array('name' => 'FakedName', 'params' => array()), $event->getType());
+        $this->assertEquals(new TypeDefinition('FakedName'), $event->getType());
         $this->assertTrue($obj->__isInitialized());
     }
 
@@ -55,7 +56,7 @@ class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->visitor = $this->getMock('JMS\Serializer\Context');
     }
 
-    private function createEvent($object, array $type)
+    private function createEvent($object, $type)
     {
         return new PreSerializeEvent($this->visitor, $object, $type);
     }

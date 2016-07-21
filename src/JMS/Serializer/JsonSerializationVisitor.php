@@ -50,11 +50,11 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         $this->options = (integer) $options;
     }
 
-    public function visitArray($data, array $type, Context $context)
+    public function visitArray($data, TypeDefinition $type, Context $context)
     {
         $result = parent::visitArray($data, $type, $context);
 
-        if (null !== $this->getRoot() && isset($type['params'][1]) && 0 === count($result)) {
+        if (null !== $this->getRoot() && isset($type->getParams()[1]) && 0 === count($result)) {
             // ArrayObject is specially treated by the json_encode function and
             // serialized to { } while a mere array would be serialized to [].
             return new \ArrayObject();
@@ -63,7 +63,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
         return $result;
     }
 
-    public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
+    public function endVisitingObject(ClassMetadata $metadata, $data, TypeDefinition $type, Context $context)
     {
         $rs = parent::endVisitingObject($metadata, $data, $type, $context);
 

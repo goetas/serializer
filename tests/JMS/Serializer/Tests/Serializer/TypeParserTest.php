@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\TypeParser;
 
 class TypeParserTest extends \PHPUnit_Framework_TestCase
@@ -29,7 +30,27 @@ class TypeParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testParse($type, $name, array $params = array())
     {
-        $this->assertEquals(array('name' => $name, 'params' => $params), $this->parser->parse($type));
+        $this->assertEquals(self::buildType($name, $params), $this->parser->parse($type));
+    }
+
+    /**
+     * @param $name
+     * @param $params
+     * @return TypeDefinition
+     */
+    private static function buildType($name, $params)
+    {
+
+        $innerParams = [];
+        foreach  ($params as $param) {
+            if (!isset($param['name'])) {
+                $innerParams[] = $param;
+            } else{
+                $innerParams[] = self::buildType($param['name'], $param['params']);
+            }
+        }
+
+        return new TypeDefinition($name, $innerParams);
     }
 
     public function getTypes()
@@ -43,6 +64,7 @@ class TypeParserTest extends \PHPUnit_Framework_TestCase
         $types[] = array('Foo', 'Foo');
         $types[] = array('Foo\Bar', 'Foo\Bar');
         $types[] = array('Foo<"asdf asdf">', 'Foo', array('asdf asdf'));
+        $types[] = array('Foo<"asdf asdf", "X x X">', 'Foo', array('asdf asdf', 'X x X'));
 
         return $types;
     }

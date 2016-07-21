@@ -23,6 +23,7 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
@@ -110,7 +111,7 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
-            function(VisitorInterface $visitor, AuthorList $data, array $type, Context $context) {
+            function(VisitorInterface $visitor, AuthorList $data, TypeDefinition $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type, $context);
             }
         );
@@ -167,7 +168,7 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $visitor = $this->serializationVisitors->get('json')->get();
         $functionToCall = 'visit' . ucfirst($primitiveType);
-        $result = $visitor->$functionToCall($data, array(), $this->getMock('JMS\Serializer\Context'));
+        $result = $visitor->$functionToCall($data, TypeDefinition::getUnknown(), $this->getMock('JMS\Serializer\Context'));
         if ($primitiveType == 'double') {
             $primitiveType = 'float';
         }

@@ -48,12 +48,12 @@ final class DeserializerGraphNavigator extends GraphNavigator
      * Called for each node of the graph that is being traversed.
      *
      * @param mixed $data the data depends on the direction, and type of visitor
-     * @param null|array $type array has the format ["name" => string, "params" => array]
+     * @param null|TypeDefinition $type array has the format ["name" => string, "params" => array]
      *
      * @param Context $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
-    public function accept($data, array $type = null, Context $context)
+    public function accept($data, TypeDefinition $type = null, Context $context)
     {
         $visitor = $context->getVisitor();
 
@@ -63,7 +63,7 @@ final class DeserializerGraphNavigator extends GraphNavigator
             throw new RuntimeException('The type must be given for all properties when deserializing.');
         }
 
-        switch ($type['name']) {
+        switch ($type->getName()) {
             case 'NULL':
                 return $visitor->visitNull($data, $type, $context);
 
@@ -93,9 +93,9 @@ final class DeserializerGraphNavigator extends GraphNavigator
                 
                 // Trigger pre-serialization callbacks, and listeners if they exist.
                 // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($this->hasListener('pre', $type['name'], $context)) {
+                if ($this->hasListener('pre', $type->getName(), $context)) {
                     $event = new PreDeserializeEvent($context, $data, $type);
-                    $this->dispatch('pre', $type['name'], $context, $event);
+                    $this->dispatch('pre', $type->getName(), $context, $event);
 
                     $type = $event->getType();
                     $data = $event->getData();
@@ -103,7 +103,7 @@ final class DeserializerGraphNavigator extends GraphNavigator
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
-                if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type['name'], $context->getFormat())) {
+                if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type->getName(), $context->getFormat())) {
                     $rs = call_user_func($handler, $visitor, $data, $type, $context);
                     $this->leaveScope($context, $data);
 
@@ -113,9 +113,9 @@ final class DeserializerGraphNavigator extends GraphNavigator
                 $exclusionStrategy = $context->getExclusionStrategy();
 
                 /** @var $metadata ClassMetadata */
-                $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
+                $metadata = $this->metadataFactory->getMetadataForClass($type->getName());
 
-                if (! empty($metadata->discriminatorMap) && $type['name'] === $metadata->discriminatorBaseClass) {
+                if (! empty($metadata->discriminatorMap) && $type->getName() === $metadata->discriminatorBaseClass) {
                     $metadata = $this->resolveMetadata($data, $metadata);
                 }
 

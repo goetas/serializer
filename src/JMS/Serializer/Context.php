@@ -81,7 +81,7 @@ abstract class Context
         $this->metadataStack = new \SplStack();
     }
 
-    public function accept($data, array $type = null)
+    public function accept($data, TypeDefinition $type = null)
     {
         return $this->navigator->accept($data, $type, $this);
     }

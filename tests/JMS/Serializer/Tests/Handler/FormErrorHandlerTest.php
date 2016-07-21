@@ -6,6 +6,7 @@ use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Handler\FormErrorHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\TypeDefinition;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormBuilder;
@@ -53,7 +54,7 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
     public function testSerializeEmptyFormError()
     {
         $form = $this->createForm();
-        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, array()));
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, TypeDefinition::getUnknown()));
 
         $this->assertSame('{}', $json);
     }
@@ -62,7 +63,7 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $form = $this->createForm();
         $form->addError(new FormError('error!'));
-        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, array()));
+        $json = json_encode($this->handler->serializeFormToJson($this->visitor, $form, TypeDefinition::getUnknown()));
 
         $this->assertSame(json_encode(array(
             'errors' => array(

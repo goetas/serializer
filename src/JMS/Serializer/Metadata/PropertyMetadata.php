@@ -111,63 +111,27 @@ class PropertyMetadata extends BasePropertyMetadata
 
     public function serialize()
     {
-        return serialize(array(
-            $this->sinceVersion,
-            $this->untilVersion,
-            $this->groups,
-            $this->serializedName,
-            $this->type,
-            $this->xmlCollection,
-            $this->xmlCollectionInline,
-            $this->xmlEntryName,
-            $this->xmlKeyAttribute,
-            $this->xmlAttribute,
-            $this->xmlValue,
-            $this->xmlNamespace,
-            $this->xmlKeyValuePairs,
-            $this->xmlElementCData,
-            $this->getter,
-            $this->setter,
-            $this->inline,
-            $this->readOnly,
-            $this->xmlAttributeMap,
-            $this->maxDepth,
-            parent::serialize(),
-            'xmlEntryNamespace' => $this->xmlEntryNamespace,
-        ));
+        $ref = new \ReflectionClass(__CLASS__);
+        $properties = [$ref->getParentClass()->getName() => parent::serialize()];
+        foreach ($ref->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            if ($property->getDeclaringClass()->getName() === $ref->getName()) {
+                $properties[$property->getName()] = $property->getValue($this);
+            }
+        }
+        return serialize($properties);
     }
 
     public function unserialize($str)
     {
         $unserialized = unserialize($str);
-        list(
-            $this->sinceVersion,
-            $this->untilVersion,
-            $this->groups,
-            $this->serializedName,
-            $this->type,
-            $this->xmlCollection,
-            $this->xmlCollectionInline,
-            $this->xmlEntryName,
-            $this->xmlKeyAttribute,
-            $this->xmlAttribute,
-            $this->xmlValue,
-            $this->xmlNamespace,
-            $this->xmlKeyValuePairs,
-            $this->xmlElementCData,
-            $this->getter,
-            $this->setter,
-            $this->inline,
-            $this->readOnly,
-            $this->xmlAttributeMap,
-            $this->maxDepth,
-            $parentStr
-            ) = $unserialized;
 
-        if (isset($unserialized['xmlEntryNamespace'])) {
-            $this->xmlEntryNamespace = $unserialized['xmlEntryNamespace'];
+        $ref = new \ReflectionClass(__CLASS__);
+        foreach ($ref->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            if ($property->getDeclaringClass()->getName() === $ref->getName()) {
+                $property->setValue($this, $unserialized[$property->getName()]);
+            }
         }
 
-        parent::unserialize($parentStr);
+        parent::unserialize($unserialized[$ref->getParentClass()->getName()]);
     }
 }

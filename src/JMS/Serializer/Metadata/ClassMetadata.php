@@ -198,50 +198,31 @@ class ClassMetadata extends MergeableClassMetadata
         $this->xmlNamespaces[$prefix] = $uri;
 
     }
-
+    
     public function serialize()
     {
-        $this->sortProperties();
-
-        return serialize(array(
-            $this->preSerializeMethods,
-            $this->postSerializeMethods,
-            $this->postDeserializeMethods,
-            $this->xmlRootName,
-            $this->xmlRootNamespace,
-            $this->xmlNamespaces,
-            $this->accessorOrder,
-            $this->customOrder,
-            $this->discriminatorDisabled,
-            $this->discriminatorBaseClass,
-            $this->discriminatorFieldName,
-            $this->discriminatorValue,
-            $this->discriminatorMap,
-            parent::serialize(),
-        ));
+        $ref = new \ReflectionClass(__CLASS__);
+        $properties = [$ref->getParentClass()->getName() => parent::serialize()];
+        foreach ($ref->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            if ($property->getDeclaringClass()->getName() === $ref->getName()) {
+                $properties[$property->getName()] = $property->getValue($this);
+            }
+        }
+        return serialize($properties);
     }
 
     public function unserialize($str)
     {
-        list(
-            $this->preSerializeMethods,
-            $this->postSerializeMethods,
-            $this->postDeserializeMethods,
-            $this->xmlRootName,
-            $this->xmlRootNamespace,
-            $this->xmlNamespaces,
-            $this->accessorOrder,
-            $this->customOrder,
-            $this->handlerCallbacks,
-            $this->discriminatorDisabled,
-            $this->discriminatorBaseClass,
-            $this->discriminatorFieldName,
-            $this->discriminatorValue,
-            $this->discriminatorMap,
-            $parentStr
-            ) = unserialize($str);
+        $unserialized = unserialize($str);
 
-        parent::unserialize($parentStr);
+        $ref = new \ReflectionClass(__CLASS__);
+        foreach ($ref->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            if ($property->getDeclaringClass()->getName() === $ref->getName()) {
+                $property->setValue($this, $unserialized[$property->getName()]);
+            }
+        }
+
+        parent::unserialize($unserialized[$ref->getParentClass()->getName()]);
     }
 
     private function sortProperties()

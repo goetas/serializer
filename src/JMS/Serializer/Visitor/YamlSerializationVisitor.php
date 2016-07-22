@@ -24,7 +24,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\Util\Writer;
+use JMS\Serializer\Visitor\Util\Writer;
 use Symfony\Component\Yaml\Inline;
 
 /**

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer\Util;
+namespace JMS\Serializer\Visitor\Util;
 
 use JMS\Serializer\Exception\RuntimeException;
 

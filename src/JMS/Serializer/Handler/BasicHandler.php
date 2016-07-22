@@ -30,36 +30,22 @@ class BasicHandler implements SubscribingHandlerInterface
     {
         $methods = array();
         $types = array('integer', 'NULL', 'string', 'boolean', 'double', 'array');
-
-        $directions = [
-            GraphNavigator::DIRECTION_SERIALIZATION,
-            GraphNavigator::DIRECTION_DESERIALIZATION
-        ];
-
-        foreach ($directions as $direction) {
-            foreach (array('json', 'xml', 'yml') as $format) {
-                foreach ($types as $type) {
-                    $methods[] = array(
-                        'type' => $type,
-                        'format' => $format,
-                        'direction' => $direction,
-                        'method' => 'visitGeneric',
-                    );
-                }
-                $methods[] = array(
-                    'type' => 'float',
-                    'format' => $format,
-                    'direction' => $direction,
-                    'method' => 'visitFloat',
-                );
-                $methods[] = array(
-                    'type' => 'resource',
-                    'format' => $format,
-                    'direction' => $direction,
-                    'method' => 'visitResource',
-                );
-            }
+        
+        foreach ($types as $type) {
+            $methods[] = array(
+                'type' => $type,
+                'method' => 'visitGeneric',
+            );
         }
+        $methods[] = array(
+            'type' => 'float',
+            'method' => 'visitFloat',
+        );
+        $methods[] = array(
+            'type' => 'resource',
+            'method' => 'visitResource',
+        );
+
         return $methods;
     }
 

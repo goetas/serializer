@@ -52,34 +52,38 @@ class HandlerRegistry implements HandlerRegistryInterface
     public function registerSubscribingHandler(SubscribingHandlerInterface $handler)
     {
         foreach ($handler->getSubscribingMethods() as $methodData) {
-            if (!isset($methodData['type'], $methodData['format'])) {
-                throw new RuntimeException(sprintf('For each subscribing method a "type" and "format" attribute must be given, but only got "%s" for %s.', implode('" and "', array_keys($methodData)), get_class($handler)));
-            }
-
             $directions = array(GraphNavigator::DIRECTION_DESERIALIZATION, GraphNavigator::DIRECTION_SERIALIZATION);
             if (isset($methodData['direction'])) {
                 $directions = array($methodData['direction']);
             }
 
             foreach ($directions as $direction) {
-                $method = isset($methodData['method']) ? $methodData['method'] : self::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
-                $this->registerHandler($direction, $methodData['type'], $methodData['format'], array($handler, $method));
+                $method = isset($methodData['method']) ? $methodData['method'] : self::getDefaultMethod($direction, isset($methodData['type']) ? $methodData['type'] : null, isset($methodData['format']) ? $methodData['format'] : null);
+                $this->registerHandler($direction, $methodData['type'], isset($methodData['format']) ? $methodData['format'] : null, array($handler, $method));
             }
         }
     }
 
     public function registerHandler($direction, $typeName, $format, $handler)
     {
-        $this->handlers[$direction][$typeName][$format] = $handler;
+        $this->handlers[$direction ?: '*'][$typeName][$format ?: '*'] = $handler;
     }
 
     public function getHandler($direction, $typeName, $format)
     {
-        if (!isset($this->handlers[$direction][$typeName][$format])) {
-            return null;
+        if (isset($this->handlers[$direction][$typeName][$format])) {
+            return $this->handlers[$direction][$typeName][$format];
         }
+        if (isset($this->handlers[$direction][$typeName]['*'])) {
+            return $this->handlers[$direction][$typeName]['*'];
+        }
+        if (isset($this->handlers['*'][$typeName][$format])) {
+            return $this->handlers['*'][$typeName][$format];
+        }
+        if (isset($this->handlers['*'][$typeName]['*'])) {
+            return $this->handlers['*'][$typeName]['*'];
+        }
+        return null;
 
-
-        return $this->handlers[$direction][$typeName][$format];
     }
 }

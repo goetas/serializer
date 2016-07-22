@@ -1,6 +1,6 @@
 <?php
 
-namespace JMS\Serializer\Builder;
+namespace JMS\Serializer\Metadata\Builder;
 
 use Doctrine\Common\Annotations\Reader;
 use Metadata\Driver\DriverInterface;

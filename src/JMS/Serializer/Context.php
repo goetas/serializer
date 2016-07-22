@@ -55,10 +55,6 @@ abstract class Context
     /** @var \SplStack */
     private $metadataStack;
 
-    public function __construct()
-    {
-    }
-
     /**
      * @param string $format
      */
@@ -74,11 +70,6 @@ abstract class Context
         $this->navigator = $navigator;
         $this->metadataFactory = $factory;
         $this->metadataStack = new \SplStack();
-    }
-
-    public function accept($data, TypeDefinition $type = null)
-    {
-        return $this->navigator->accept($data, $type, $this);
     }
 
     public function getMetadataFactory()

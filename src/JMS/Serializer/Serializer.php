@@ -73,7 +73,6 @@ class Serializer implements SerializerInterface
         $this->navigatorFactory = new GraphNavigatorFactory($this->factory, $this->handlerRegistry, $this->objectConstructor, $this->dispatcher);
     }
 
-
     private function callVisitor($array, $format, Context $context, $callback)
     {
         if (!isset($array[$format])){
@@ -85,6 +84,7 @@ class Serializer implements SerializerInterface
         return call_user_func($callback, $array[$format]);
 
     }
+
     public function serialize($data, $format, SerializationContext $context = null)
     {
         if (null === $context) {
@@ -119,6 +119,7 @@ class Serializer implements SerializerInterface
      *
      * @param mixed $data anything that converts to an array, typically an object or an array of objects
      *
+     * @param SerializationContext $context
      * @return array
      */
     public function toArray($data, SerializationContext $context = null)

@@ -19,7 +19,7 @@
 namespace JMS\Serializer\Tests;
 
 use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Visitor\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Filesystem\Filesystem;

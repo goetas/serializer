@@ -20,6 +20,7 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Graph\GraphNavigator;
+use JMS\Serializer\Visitor\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 class SerializationContext extends Context

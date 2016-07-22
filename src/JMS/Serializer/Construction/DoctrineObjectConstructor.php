@@ -21,7 +21,7 @@ namespace JMS\Serializer\Construction;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Visitor\VisitorInterface;
 
 /**
  * Doctrine object constructor for new (or existing) objects during deserialization.

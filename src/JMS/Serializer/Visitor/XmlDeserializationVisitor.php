@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Visitor;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
@@ -25,6 +26,7 @@ use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use JMS\Serializer\TypeDefinition;
 
 class XmlDeserializationVisitor extends AbstractVisitor
 {

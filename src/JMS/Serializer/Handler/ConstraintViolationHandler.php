@@ -20,10 +20,10 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\Graph\GraphNavigator;
-use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Visitor\JsonSerializationVisitor;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\XmlSerializationVisitor;
-use JMS\Serializer\YamlSerializationVisitor;
+use JMS\Serializer\Visitor\XmlSerializationVisitor;
+use JMS\Serializer\Visitor\YamlSerializationVisitor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 

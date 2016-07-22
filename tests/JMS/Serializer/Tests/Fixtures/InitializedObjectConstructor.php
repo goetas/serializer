@@ -22,7 +22,7 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Visitor\VisitorInterface;
 
 /**
  * Object constructor that allows deserialization into already constructed

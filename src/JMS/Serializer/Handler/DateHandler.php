@@ -21,11 +21,11 @@ namespace JMS\Serializer\Handler;
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Graph\GraphNavigator;
-use JMS\Serializer\JsonDeserializationVisitor;
+use JMS\Serializer\Visitor\JsonDeserializationVisitor;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\XmlDeserializationVisitor;
-use JMS\Serializer\XmlSerializationVisitor;
+use JMS\Serializer\Visitor\VisitorInterface;
+use JMS\Serializer\Visitor\XmlDeserializationVisitor;
+use JMS\Serializer\Visitor\XmlSerializationVisitor;
 
 class DateHandler implements SubscribingHandlerInterface
 {

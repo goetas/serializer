@@ -24,6 +24,9 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
 use JMS\Serializer\Graph\GraphNavigatorFactory;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\Visitor\JsonDeserializationVisitor;
+use JMS\Serializer\Visitor\JsonSerializationVisitor;
+use JMS\Serializer\Visitor\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**

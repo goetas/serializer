@@ -16,9 +16,11 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Visitor;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\TypeDefinition;
 
 class JsonSerializationVisitor extends GenericSerializationVisitor
 {

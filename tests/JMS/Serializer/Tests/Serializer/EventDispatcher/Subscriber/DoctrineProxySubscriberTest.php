@@ -22,7 +22,7 @@ use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Tests\Fixtures\SimpleObjectProxy;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Visitor\VisitorInterface;
 
 class DoctrineProxySubscriberTest extends \PHPUnit_Framework_TestCase
 {

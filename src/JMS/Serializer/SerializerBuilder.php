@@ -37,6 +37,12 @@ use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\Visitor\JsonDeserializationVisitor;
+use JMS\Serializer\Visitor\JsonSerializationVisitor;
+use JMS\Serializer\Visitor\VisitorInterface;
+use JMS\Serializer\Visitor\XmlDeserializationVisitor;
+use JMS\Serializer\Visitor\XmlSerializationVisitor;
+use JMS\Serializer\Visitor\YamlSerializationVisitor;
 use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 

@@ -53,7 +53,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $this->context->expects($this->any())->method('getFormat')->will($this->returnValue('json'));
         $this->context->expects($this->any())
             ->method('getVisitor')
-            ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
+            ->will($this->returnValue($this->getMock('JMS\Serializer\Visitor\VisitorInterface')));
 
 
         $this->context->expects($this->any())
@@ -94,7 +94,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getVisitor')
-            ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
+            ->will($this->returnValue($this->getMock('JMS\Serializer\Visitor\VisitorInterface')));
 
         $navigator = $this->navigatorFactory->getGraphNavigator();
         $navigator->accept($object, null, $this->context);
@@ -130,7 +130,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getVisitor')
-            ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
+            ->will($this->returnValue($this->getMock('JMS\Serializer\Visitor\VisitorInterface')));
 
         $navigator = $this->navigatorFactory->getGraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION);
         $navigator->accept('random', new TypeDefinition($class), $this->context);
@@ -154,7 +154,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
         $this->context->expects($this->any())
             ->method('getVisitor')
-            ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
+            ->will($this->returnValue($this->getMock('JMS\Serializer\Visitor\VisitorInterface')));
 
         $navigator = $this->navigatorFactory->getGraphNavigator();
         $navigator->accept($object, null, $this->context);

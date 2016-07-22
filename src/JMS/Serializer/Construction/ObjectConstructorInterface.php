@@ -21,7 +21,7 @@ namespace JMS\Serializer\Construction;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Visitor\VisitorInterface;
 
 /**
  * Implementations of this interface construct new objects during deserialization.

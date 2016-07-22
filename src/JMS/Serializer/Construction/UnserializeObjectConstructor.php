@@ -22,7 +22,7 @@ use Doctrine\Instantiator\Instantiator;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Visitor\VisitorInterface;
 
 class UnserializeObjectConstructor implements ObjectConstructorInterface
 {

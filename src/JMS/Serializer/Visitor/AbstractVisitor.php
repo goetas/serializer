@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Visitor;
 
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\Serializer\TypeDefinition;
 
 abstract class AbstractVisitor implements VisitorInterface
 {

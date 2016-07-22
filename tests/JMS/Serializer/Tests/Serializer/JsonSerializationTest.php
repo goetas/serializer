@@ -26,7 +26,7 @@ use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Visitor\VisitorInterface;
 
 class JsonSerializationTest extends BaseSerializationTest
 {

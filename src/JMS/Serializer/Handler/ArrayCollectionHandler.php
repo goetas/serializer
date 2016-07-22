@@ -23,7 +23,7 @@ use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Context;
 use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Visitor\VisitorInterface;
 
 class ArrayCollectionHandler implements SubscribingHandlerInterface
 {

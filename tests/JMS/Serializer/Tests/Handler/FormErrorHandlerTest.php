@@ -3,7 +3,7 @@
 namespace JMS\Serializer\Tests\Handler;
 
 use JMS\Serializer\Handler\FormErrorHandler;
-use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Visitor\JsonSerializationVisitor;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\TypeDefinition;
@@ -21,7 +21,7 @@ class FormErrorHandlerTest extends \PHPUnit_Framework_TestCase
     protected $handler;
 
     /**
-     * @var \JMS\Serializer\VisitorInterface
+     * @var \JMS\Serializer\Visitor\VisitorInterface
      */
     protected $visitor;
 

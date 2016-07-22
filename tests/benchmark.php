@@ -31,7 +31,8 @@ function createCollection()
 
 function createObject()
 {
-    $post = new \JMS\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \JMS\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime);
+    $pub = new \JMS\Serializer\Tests\Fixtures\Publisher('bar');
+    $post = new \JMS\Serializer\Tests\Fixtures\BlogPost('FooooooooooooooooooooooBAR', new \JMS\Serializer\Tests\Fixtures\Author('Foo'), new \DateTime, $pub);
     for ($i = 0; $i < 10; $i++) {
         $post->addComment(new \JMS\Serializer\Tests\Fixtures\Comment(new \JMS\Serializer\Tests\Fixtures\Author('foo'), 'foobar'));
     }
@@ -52,7 +53,7 @@ benchmark($f, 1);
 printf('Benchmarking collection for format "%s".' . PHP_EOL, $format);
 $metrics['benchmark-collection-' . $format] = benchmark($f, $iterations);
 
-$output = json_encode(array('metrics' => $metrics));
+$output = json_encode(array('metrics' => $metrics), JSON_PRETTY_PRINT);
 
 if (isset($_SERVER['argv'][3])) {
     file_put_contents($_SERVER['argv'][3], $output);

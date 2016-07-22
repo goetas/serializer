@@ -18,14 +18,18 @@
 
 namespace JMS\Serializer\Handler;
 
-use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Graph\GraphNavigator;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {
     protected $handlers;
 
-    public static function getDefaultMethod($direction, $type, $format)
+    public function __construct(array $handlers = array())
+    {
+        $this->handlers = $handlers;
+    }
+
+    private static function getDefaultMethod($direction, $type, $format)
     {
         if (false !== $pos = strrpos($type, '\\')) {
             $type = substr($type, $pos + 1);
@@ -43,44 +47,32 @@ class HandlerRegistry implements HandlerRegistryInterface
         }
     }
 
-    public function __construct(array $handlers = array())
-    {
-        $this->handlers = $handlers;
-    }
-
     public function registerSubscribingHandler(SubscribingHandlerInterface $handler)
     {
         foreach ($handler->getSubscribingMethods() as $methodData) {
-            $directions = array(GraphNavigator::DIRECTION_DESERIALIZATION, GraphNavigator::DIRECTION_SERIALIZATION);
-            if (isset($methodData['direction'])) {
-                $directions = array($methodData['direction']);
-            }
+            $directions = isset($methodData['direction']) ? [$methodData['direction']] : [GraphNavigator::DIRECTION_DESERIALIZATION, GraphNavigator::DIRECTION_SERIALIZATION];
 
             foreach ($directions as $direction) {
-                $method = isset($methodData['method']) ? $methodData['method'] : self::getDefaultMethod($direction, isset($methodData['type']) ? $methodData['type'] : null, isset($methodData['format']) ? $methodData['format'] : null);
-                $this->registerHandler($direction, $methodData['type'], isset($methodData['format']) ? $methodData['format'] : null, array($handler, $method));
+                $formats  = isset($methodData['format']) ? [$methodData['format']] : ['json', 'xml', 'yml'];
+
+                foreach ($formats as $format) {
+                    $method = isset($methodData['method']) ? $methodData['method'] : self::getDefaultMethod($direction, $methodData['type'], $format);
+
+                    $this->registerHandler($direction, $methodData['type'], $format, array($handler, $method));
+                }
             }
         }
     }
 
     public function registerHandler($direction, $typeName, $format, $handler)
     {
-        $this->handlers[$direction ?: '*'][$typeName][$format ?: '*'] = $handler;
+        $this->handlers[$direction][$typeName][$format] = $handler;
     }
 
     public function getHandler($direction, $typeName, $format)
     {
         if (isset($this->handlers[$direction][$typeName][$format])) {
             return $this->handlers[$direction][$typeName][$format];
-        }
-        if (isset($this->handlers[$direction][$typeName]['*'])) {
-            return $this->handlers[$direction][$typeName]['*'];
-        }
-        if (isset($this->handlers['*'][$typeName][$format])) {
-            return $this->handlers['*'][$typeName][$format];
-        }
-        if (isset($this->handlers['*'][$typeName]['*'])) {
-            return $this->handlers['*'][$typeName]['*'];
         }
         return null;
 

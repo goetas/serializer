@@ -81,12 +81,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         $this->stack = new \SplStack;
         $this->metadataStack = new \SplStack;
     }
-
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
-
+    
     public function visitNull($data, TypeDefinition $type, Context $context)
     {
         if (null === $this->document) {

@@ -50,12 +50,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
         $this->objectMetadataStack = new \SplStack;
         $this->result = null;
     }
-
-    public function getNavigator()
-    {
-        return $this->navigator;
-    }
-
+    
     public function prepare($data)
     {
         $previous = libxml_use_internal_errors(true);

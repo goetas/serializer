@@ -1,3 +1,15 @@
 tools:
   external_code_coverage:
     timeout: 600
+
+filter:
+    paths:
+        - 'src/'
+coding_style:
+    php:
+        indentation:
+            general:
+                size: 1
+        spaces:
+            around_operators:
+                multiplicative: false

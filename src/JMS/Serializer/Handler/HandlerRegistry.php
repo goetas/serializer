@@ -83,6 +83,7 @@ class HandlerRegistry implements HandlerRegistryInterface
             return null;
         }
 
+
         return $this->handlers[$direction][$typeName][$format];
     }
 }

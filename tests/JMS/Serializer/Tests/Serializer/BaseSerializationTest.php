@@ -21,6 +21,7 @@ namespace JMS\Serializer\Tests\Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Handler\BasicHandler;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
@@ -984,6 +985,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
 
         $this->handlerRegistry = new HandlerRegistry();
+        $this->handlerRegistry->registerSubscribingHandler(new BasicHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));

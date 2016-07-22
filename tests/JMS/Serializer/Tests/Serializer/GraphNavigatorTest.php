@@ -20,6 +20,7 @@ namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\Serializer\GraphNavigatorFactory;
+use JMS\Serializer\Handler\BasicHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -48,6 +49,12 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
     public function testResourceThrowsException()
     {
         $navigator = $this->navigatorFactory->getGraphNavigator();
+        
+        $this->context->expects($this->any())->method('getFormat')->will($this->returnValue('json'));
+        $this->context->expects($this->any())
+            ->method('getVisitor')
+            ->will($this->returnValue($this->getMock('JMS\Serializer\VisitorInterface')));
+
 
         $this->context->expects($this->any())
             ->method('getDirection')
@@ -156,8 +163,11 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->context = $this->getMock('JMS\Serializer\SerializationContext');
+
         $this->dispatcher = new EventDispatcher();
         $this->handlerRegistry = new HandlerRegistry();
+        $this->handlerRegistry->registerSubscribingHandler(new BasicHandler());
+        
         $this->objectConstructor = new UnserializeObjectConstructor();
 
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));

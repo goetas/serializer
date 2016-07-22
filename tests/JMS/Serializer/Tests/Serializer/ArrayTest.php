@@ -18,6 +18,7 @@
 
 namespace JMS\Serializer\Tests\Serializer;
 
+use JMS\Serializer\Handler\BasicHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
@@ -42,9 +43,11 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     {
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
 
+        $handler = new HandlerRegistry();
+        $handler->registerSubscribingHandler(new BasicHandler());
         $this->serializer = new Serializer(
             new MetadataFactory(new AnnotationDriver(new AnnotationReader())),
-            new HandlerRegistry(),
+            $handler,
             new UnserializeObjectConstructor(),
             new Map(array('json' => new JsonSerializationVisitor($namingStrategy))),
             new Map(array('json' => new JsonDeserializationVisitor($namingStrategy)))

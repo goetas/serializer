@@ -20,6 +20,7 @@ namespace JMS\Serializer;
 
 use JMS\Serializer\Builder\DefaultDriverFactory;
 use JMS\Serializer\Builder\DriverFactoryInterface;
+use JMS\Serializer\Handler\BasicHandler;
 use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Exception\RuntimeException;
@@ -118,6 +119,7 @@ class SerializerBuilder
     public function addDefaultHandlers()
     {
         $this->handlersConfigured = true;
+        $this->handlerRegistry->registerSubscribingHandler(new BasicHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());

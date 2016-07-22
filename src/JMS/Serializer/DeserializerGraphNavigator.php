@@ -63,92 +63,66 @@ final class DeserializerGraphNavigator extends GraphNavigator
             throw new RuntimeException('The type must be given for all properties when deserializing.');
         }
 
-        switch ($type->getName()) {
-            case 'NULL':
-                return $visitor->visitNull($data, $type, $context);
 
-            case 'string':
-                return $visitor->visitString($data, $type, $context);
+        $context->increaseDepth();
 
-            case 'integer':
-                return $visitor->visitInteger($data, $type, $context);
+        // Trigger pre-serialization callbacks, and listeners if they exist.
+        // Dispatch pre-serialization event before handling data to have ability change type in listener
+        if ($this->hasListener('pre', $type->getName(), $context)) {
+            $event = new PreDeserializeEvent($context, $data, $type);
+            $this->dispatch('pre', $type->getName(), $context, $event);
 
-            case 'boolean':
-                return $visitor->visitBoolean($data, $type, $context);
-
-            case 'double':
-            case 'float':
-                return $visitor->visitDouble($data, $type, $context);
-
-            case 'array':
-                return $visitor->visitArray($data, $type, $context);
-
-            case 'resource':
-                $msg = 'Resources are not supported in serialized data.';
-                throw new RuntimeException($msg);
-
-            default:
-
-                $context->increaseDepth();
-                
-                // Trigger pre-serialization callbacks, and listeners if they exist.
-                // Dispatch pre-serialization event before handling data to have ability change type in listener
-                if ($this->hasListener('pre', $type->getName(), $context)) {
-                    $event = new PreDeserializeEvent($context, $data, $type);
-                    $this->dispatch('pre', $type->getName(), $context, $event);
-
-                    $type = $event->getType();
-                    $data = $event->getData();
-                }
-                // First, try whether a custom handler exists for the given type. This is done
-                // before loading metadata because the type name might not be a class, but
-                // could also simply be an artifical type.
-                if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type->getName(), $context->getFormat())) {
-                    $rs = call_user_func($handler, $visitor, $data, $type, $context);
-                    $this->leaveScope($context, $data);
-
-                    return $rs;
-                }
-
-                $exclusionStrategy = $context->getExclusionStrategy();
-
-                /** @var $metadata ClassMetadata */
-                $metadata = $this->metadataFactory->getMetadataForClass($type->getName());
-
-                if (! empty($metadata->discriminatorMap) && $type->getName() === $metadata->discriminatorBaseClass) {
-                    $metadata = $this->resolveMetadata($data, $metadata);
-                }
-
-                if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
-                    $this->leaveScope($context, $data);
-
-                    return null;
-                }
-
-                $context->pushClassMetadata($metadata);
-
-                $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type, $context);
-
-                $visitor->startVisitingObject($metadata, $object, $type, $context);
-                foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
-                        continue;
-                    }
-
-                    if ($propertyMetadata->readOnly) {
-                        continue;
-                    }
-
-                    $context->pushPropertyMetadata($propertyMetadata);
-                    $visitor->visitProperty($propertyMetadata, $data, $context);
-                    $context->popPropertyMetadata();
-                }
-
-                $rs = $visitor->endVisitingObject($metadata, $data, $type, $context);
-                $this->afterVisitingObject($metadata, $rs, $type, $context);
-
-                return $rs;
+            $type = $event->getType();
+            $data = $event->getData();
         }
+        // First, try whether a custom handler exists for the given type. This is done
+        // before loading metadata because the type name might not be a class, but
+        // could also simply be an artifical type.
+        if (null !== $handler = $this->handlerRegistry->getHandler($context->getDirection(), $type->getName(), $context->getFormat())) {
+            $rs = call_user_func($handler, $visitor, $data, $type, $context);
+            $this->leaveScope($context, $data);
+
+            return $rs;
+        }
+
+        $exclusionStrategy = $context->getExclusionStrategy();
+
+        /** @var $metadata ClassMetadata */
+        $metadata = $this->metadataFactory->getMetadataForClass($type->getName());
+
+        if (! empty($metadata->discriminatorMap) && $type->getName() === $metadata->discriminatorBaseClass) {
+            $metadata = $this->resolveMetadata($data, $metadata);
+        }
+
+        if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipClass($metadata, $context)) {
+            $this->leaveScope($context, $data);
+
+            return null;
+        }
+
+        $context->pushClassMetadata($metadata);
+
+        $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type, $context);
+
+        $visitor->startVisitingObject($metadata, $object, $type, $context);
+        foreach ($metadata->propertyMetadata as $propertyMetadata) {
+            if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($propertyMetadata, $context)) {
+                continue;
+            }
+
+            if ($propertyMetadata->readOnly) {
+                continue;
+            }
+
+            $context->pushPropertyMetadata($propertyMetadata);
+            $visitor->visitProperty($propertyMetadata, $data, $context);
+            $context->popPropertyMetadata();
+        }
+
+        $rs = $visitor->endVisitingObject($metadata, $data, $type, $context);
+        $this->afterVisitingObject($metadata, $rs, $type, $context);
+
+        return $rs;
     }
 
     protected function leaveScope(Context $context, $data)

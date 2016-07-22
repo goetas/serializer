@@ -36,40 +36,18 @@ use Metadata\MetadataFactoryInterface;
  */
 abstract class GraphNavigator
 {
-    const DIRECTION_SERIALIZATION = 1;
-    const DIRECTION_DESERIALIZATION = 2;
+    const DIRECTION_SERIALIZATION = 'serialization';
+    const DIRECTION_DESERIALIZATION = 'deserialization';
 
     protected $dispatcher;
     protected $metadataFactory;
     protected $handlerRegistry;
-
-    /**
-     * Parses a direction string to one of the direction constants.
-     *
-     * @param string $dirStr
-     *
-     * @return integer
-     */
-    public static function parseDirection($dirStr)
-    {
-        switch (strtolower($dirStr)) {
-            case 'serialization':
-                return self::DIRECTION_SERIALIZATION;
-
-            case 'deserialization':
-                return self::DIRECTION_DESERIALIZATION;
-
-            default:
-                throw new InvalidArgumentException(sprintf('The direction "%s" does not exist.', $dirStr));
-        }
-    }
 
     protected function callLifecycleMethods($when, ClassMetadata $metadata, Context $context, $object)
     {
         $direction = $context->getDirection() == self::DIRECTION_SERIALIZATION ? 'Serialize' : 'Deserialize';
 
         $propName = $when . $direction . 'Methods';
-
 
         if (!property_exists($metadata, $propName)) {
             return;

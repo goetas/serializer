@@ -76,11 +76,9 @@ class Serializer implements SerializerInterface
     private function callVisitor($array, $format, Context $context, $callback)
     {
         if (!isset($array[$format])){
-
-            $direction = $context->getDirection() == GraphNavigator::DIRECTION_SERIALIZATION ? 'serialization': 'deserialization';
-
-            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for %s.', $format, $direction));
+            throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for %s.', $format, $context->getDirection()));
         }
+        
         return call_user_func($callback, $array[$format]);
 
     }
@@ -167,7 +165,7 @@ class Serializer implements SerializerInterface
 
     private function visit(VisitorInterface $visitor, Context $context, $data, $format, TypeDefinition $type = null)
     {
-        $navigator = $this->navigatorFactory->getGraphNavigator($context instanceof DeserializationContext ? GraphNavigator::DIRECTION_DESERIALIZATION : GraphNavigator::DIRECTION_SERIALIZATION);
+        $navigator = $this->navigatorFactory->getGraphNavigator($context->getDirection());
         $context->initialize(
             $format,
             $visitor,

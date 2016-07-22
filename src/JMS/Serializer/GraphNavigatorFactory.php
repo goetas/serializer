@@ -48,7 +48,7 @@ class GraphNavigatorFactory
     }
 
     /**
-     * @param int $direction
+     * @param string $direction
      * @return GraphNavigator
      */
     public function getGraphNavigator($direction = GraphNavigator::DIRECTION_SERIALIZATION)

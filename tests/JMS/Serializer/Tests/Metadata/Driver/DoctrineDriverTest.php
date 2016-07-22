@@ -18,12 +18,12 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as DoctrineDriver;
+use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\DoctrineTypeDriver;
 use JMS\Serializer\TypeDefinition;
 
 class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
@@ -40,7 +40,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     {
         $metadata = $this->getMetadata();
 
-        $this->assertEquals(new TypeDefinition('DateTime'),$metadata->propertyMetadata['createdAt']->type);
+        $this->assertEquals(new TypeDefinition('DateTime'), $metadata->propertyMetadata['createdAt']->type);
     }
 
     public function testSingleValuedAssociationIsProperlyHinted()
@@ -58,7 +58,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             new TypeDefinition('ArrayCollection', array(
-                new TypeDefinition('JMS\Serializer\Tests\Fixtures\Doctrine\Comment'))
+                    new TypeDefinition('JMS\Serializer\Tests\Fixtures\Doctrine\Comment'))
             ),
             $metadata->propertyMetadata['comments']->type
         );
@@ -104,7 +104,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
         $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
         $config->setProxyNamespace('JMS\Tests\Proxies');
         $config->setMetadataDriverImpl(
-            new DoctrineDriver(new AnnotationReader(), __DIR__.'/../../Fixtures/Doctrine')
+            new DoctrineDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/Doctrine')
         );
 
         $conn = array(
@@ -124,8 +124,8 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     {
         $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
         $registry->expects($this->atLeastOnce())
-             ->method('getManagerForClass')
-             ->will($this->returnValue($this->getEntityManager()));
+            ->method('getManagerForClass')
+            ->will($this->returnValue($this->getEntityManager()));
 
         return new DoctrineTypeDriver(
             $this->getAnnotationDriver(),

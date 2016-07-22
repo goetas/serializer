@@ -34,8 +34,8 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
     protected function hideProperty(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata)
     {
         return 'lazyPropertiesDefaults' === $propertyMetadata->name
-            || $doctrineMetadata->parentMapping === $propertyMetadata->name
-            || $doctrineMetadata->node === $propertyMetadata->name;
+        || $doctrineMetadata->parentMapping === $propertyMetadata->name
+        || $doctrineMetadata->node === $propertyMetadata->name;
     }
 
     protected function setPropertyType(DoctrineClassMetadata $doctrineMetadata, PropertyMetadata $propertyMetadata)
@@ -43,7 +43,7 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
         $propertyName = $propertyMetadata->name;
         if ($doctrineMetadata->hasField($propertyName) && $fieldType = $this->normalizeFieldType($doctrineMetadata->getTypeOfField($propertyName))) {
             $field = $doctrineMetadata->getField($propertyName);
-            if ( ! empty($field['multivalue'])) {
+            if (!empty($field['multivalue'])) {
                 $fieldType = 'array';
             }
 
@@ -59,7 +59,7 @@ class DoctrinePHPCRTypeDriver extends AbstractDoctrineTypeDriver
                 return;
             }
 
-            if ( ! $doctrineMetadata->isSingleValuedAssociation($propertyName)) {
+            if (!$doctrineMetadata->isSingleValuedAssociation($propertyName)) {
                 $targetEntity = "ArrayCollection<{$targetEntity}>";
             }
 

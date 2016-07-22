@@ -33,6 +33,11 @@ final class TypeDefinition
         $this->params = $params;
     }
 
+    public static function getUnknown()
+    {
+        return new self('UNKNOWN');
+    }
+
     /**
      * @return string
      */
@@ -47,10 +52,5 @@ final class TypeDefinition
     public function getParams()
     {
         return $this->params;
-    }
-
-    public static function getUnknown()
-    {
-        return new self('UNKNOWN');
     }
 }

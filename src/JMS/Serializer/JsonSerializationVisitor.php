@@ -47,7 +47,7 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
 
     public function setOptions($options)
     {
-        $this->options = (integer) $options;
+        $this->options = (integer)$options;
     }
 
     public function visitArray($data, TypeDefinition $type, Context $context)

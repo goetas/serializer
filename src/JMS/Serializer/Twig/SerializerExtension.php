@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer\Twig;
 
-use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 
 /**
  * Serializer helper twig extension
@@ -30,14 +30,14 @@ class SerializerExtension extends \Twig_Extension
 {
     protected $serializer;
 
-    public function getName()
-    {
-        return 'jms_serializer';
-    }
-
     public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
+    }
+
+    public function getName()
+    {
+        return 'jms_serializer';
     }
 
     public function getFilters()

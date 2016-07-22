@@ -18,12 +18,12 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\PHPCR\Configuration;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\Mapping\Driver\AnnotationDriver as DoctrinePHPCRDriver;
+use JMS\Serializer\Metadata\Driver\AnnotationDriver;
+use JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver;
 use JMS\Serializer\TypeDefinition;
 
 class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
@@ -99,7 +99,7 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
         $config->setProxyDir(sys_get_temp_dir() . '/JMSDoctrineTestProxies');
         $config->setProxyNamespace('JMS\Tests\Proxies');
         $config->setMetadataDriverImpl(
-            new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__.'/../../Fixtures/DoctrinePHPCR')
+            new DoctrinePHPCRDriver(new AnnotationReader(), __DIR__ . '/../../Fixtures/DoctrinePHPCR')
         );
 
         $session = $this->getMock('PHPCR\SessionInterface');
@@ -116,8 +116,8 @@ class DoctrinePHPCRDriverTest extends \PHPUnit_Framework_TestCase
     {
         $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
         $registry->expects($this->atLeastOnce())
-             ->method('getManagerForClass')
-             ->will($this->returnValue($this->getDocumentManager()));
+            ->method('getManagerForClass')
+            ->will($this->returnValue($this->getDocumentManager()));
 
         return new DoctrinePHPCRTypeDriver(
             $this->getAnnotationDriver(),

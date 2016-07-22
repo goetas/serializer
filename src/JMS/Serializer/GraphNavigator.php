@@ -19,12 +19,12 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\EventDispatcher\Event;
-use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\EventDispatcher\ObjectEvent;
+use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
-use JMS\Serializer\Exception\InvalidArgumentException;
 
 /**
  * Handles traversal along the object graph.
@@ -66,16 +66,16 @@ abstract class GraphNavigator
 
     protected function callLifecycleMethods($when, ClassMetadata $metadata, Context $context, $object)
     {
-        $direction = $context->getDirection() == self::DIRECTION_SERIALIZATION ? 'Serialize' : 'Deserialize' ;
+        $direction = $context->getDirection() == self::DIRECTION_SERIALIZATION ? 'Serialize' : 'Deserialize';
 
         $propName = $when . $direction . 'Methods';
 
 
-        if (!property_exists($metadata, $propName)){
-            return ;
+        if (!property_exists($metadata, $propName)) {
+            return;
         }
-        
-        foreach ($metadata->{$propName} as $method){
+
+        foreach ($metadata->{$propName} as $method) {
             $method->invoke($object);
         }
     }
@@ -96,20 +96,21 @@ abstract class GraphNavigator
      * @return mixed the return value depends on the direction, and type of visitor
      */
     public abstract function accept($data, TypeDefinition $type = null, Context $context);
+
     protected abstract function leaveScope(Context $context, $data);
 
     protected function hasListener($type, $typeName, Context $context)
     {
         $eventName = $context->getDirection() == self::DIRECTION_DESERIALIZATION ? 'deserialize' : 'serialize';
 
-        return null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.'.$type.'_'. $eventName, $typeName, $context->getFormat());
+        return null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.' . $type . '_' . $eventName, $typeName, $context->getFormat());
     }
 
     protected function dispatch($type, $typeName, Context $context, Event $event)
     {
         $eventName = $context->getDirection() == self::DIRECTION_DESERIALIZATION ? 'deserialize' : 'serialize';
 
-        $this->dispatcher->dispatch('serializer.'.$type.'_'.$eventName, $typeName, $context->getFormat(), $event);
+        $this->dispatcher->dispatch('serializer.' . $type . '_' . $eventName, $typeName, $context->getFormat(), $event);
     }
 
     protected function afterVisitingObject(ClassMetadata $metadata, $object, TypeDefinition $type, Context $context)

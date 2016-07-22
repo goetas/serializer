@@ -19,9 +19,9 @@
 namespace JMS\Serializer\Construction;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\VisitorInterface;
 
 /**
  * Doctrine object constructor for new (or existing) objects during deserialization.
@@ -34,12 +34,12 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
     /**
      * Constructor.
      *
-     * @param ManagerRegistry            $managerRegistry     Manager registry
+     * @param ManagerRegistry $managerRegistry Manager registry
      * @param ObjectConstructorInterface $fallbackConstructor Fallback object constructor
      */
     public function __construct(ManagerRegistry $managerRegistry, ObjectConstructorInterface $fallbackConstructor)
     {
-        $this->managerRegistry     = $managerRegistry;
+        $this->managerRegistry = $managerRegistry;
         $this->fallbackConstructor = $fallbackConstructor;
     }
 
@@ -51,7 +51,7 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         // Locate possible ObjectManager
         $objectManager = $this->managerRegistry->getManagerForClass($metadata->name);
 
-        if ( ! $objectManager) {
+        if (!$objectManager) {
             // No ObjectManager found, proceed with normal deserialization
             return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
         }
@@ -65,17 +65,17 @@ class DoctrineObjectConstructor implements ObjectConstructorInterface
         }
 
         // Managed entity, check for proxy load
-        if ( ! is_array($data)) {
+        if (!is_array($data)) {
             // Single identifier, load proxy
             return $objectManager->getReference($metadata->name, $data);
         }
 
         // Fallback to default constructor if missing identifier(s)
-        $classMetadata  = $objectManager->getClassMetadata($metadata->name);
+        $classMetadata = $objectManager->getClassMetadata($metadata->name);
         $identifierList = array();
 
         foreach ($classMetadata->getIdentifierFieldNames() as $name) {
-            if ( ! array_key_exists($name, $data)) {
+            if (!array_key_exists($name, $data)) {
                 return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);
             }
 

@@ -61,16 +61,9 @@ class Writer
      */
     public function writeln($content)
     {
-        $this->write($content."\n");
+        $this->write($content . "\n");
 
         return $this;
-    }
-
-    public function revert()
-    {
-        $change = array_pop($this->changes);
-        $this->changeCount -= 1;
-        $this->content = substr($this->content, 0, -1 * strlen($change));
     }
 
     /**
@@ -83,16 +76,17 @@ class Writer
         $addition = '';
 
         $lines = explode("\n", $content);
-        for ($i=0,$c=count($lines); $i<$c; $i++) {
+        for ($i = 0, $c = count($lines); $i < $c; $i++) {
             if ($this->indentationLevel > 0
                 && !empty($lines[$i])
-                && ((empty($addition) && "\n" === substr($this->content, -1)) || "\n" === substr($addition, -1))) {
+                && ((empty($addition) && "\n" === substr($this->content, -1)) || "\n" === substr($addition, -1))
+            ) {
                 $addition .= str_repeat(' ', $this->indentationLevel * $this->indentationSpaces);
             }
 
             $addition .= $lines[$i];
 
-            if ($i+1 < $c) {
+            if ($i + 1 < $c) {
                 $addition .= "\n";
             }
         }
@@ -104,9 +98,16 @@ class Writer
         return $this;
     }
 
+    public function revert()
+    {
+        $change = array_pop($this->changes);
+        $this->changeCount -= 1;
+        $this->content = substr($this->content, 0, -1 * strlen($change));
+    }
+
     public function rtrim($preserveNewLines = true)
     {
-        if ( ! $preserveNewLines) {
+        if (!$preserveNewLines) {
             $this->content = rtrim($this->content);
 
             return $this;

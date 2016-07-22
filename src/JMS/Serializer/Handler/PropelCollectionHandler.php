@@ -18,12 +18,11 @@
 
 namespace JMS\Serializer\Handler;
 
-use JMS\Serializer\TypeDefinition;
-use \PropelCollection;
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use PropelCollection;
 
 class PropelCollectionHandler implements SubscribingHandlerInterface
 {

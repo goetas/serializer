@@ -42,10 +42,10 @@ class TypeParserTest extends \PHPUnit_Framework_TestCase
     {
 
         $innerParams = [];
-        foreach  ($params as $param) {
+        foreach ($params as $param) {
             if (!isset($param['name'])) {
                 $innerParams[] = $param;
-            } else{
+            } else {
                 $innerParams[] = self::buildType($param['name'], $param['params']);
             }
         }

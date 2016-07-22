@@ -18,11 +18,11 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
-use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 
@@ -37,7 +37,7 @@ use Metadata\MetadataFactoryInterface;
 final class DeserializerGraphNavigator extends GraphNavigator
 {
     private $objectConstructor;
-    
+
     public function __construct(MetadataFactoryInterface $metadataFactory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null)
     {
         parent::__construct($metadataFactory, $handlerRegistry, $dispatcher);
@@ -90,7 +90,7 @@ final class DeserializerGraphNavigator extends GraphNavigator
         /** @var $metadata ClassMetadata */
         $metadata = $this->metadataFactory->getMetadataForClass($type->getName());
 
-        if (! empty($metadata->discriminatorMap) && $type->getName() === $metadata->discriminatorBaseClass) {
+        if (!empty($metadata->discriminatorMap) && $type->getName() === $metadata->discriminatorBaseClass) {
             $metadata = $this->resolveMetadata($data, $metadata);
         }
 
@@ -129,16 +129,16 @@ final class DeserializerGraphNavigator extends GraphNavigator
     {
         $context->decreaseDepth();
     }
-    
+
     private function resolveMetadata($data, ClassMetadata $metadata)
     {
         switch (true) {
             case is_array($data) && isset($data[$metadata->discriminatorFieldName]):
-                $typeValue = (string) $data[$metadata->discriminatorFieldName];
+                $typeValue = (string)$data[$metadata->discriminatorFieldName];
                 break;
 
             case is_object($data) && isset($data->{$metadata->discriminatorFieldName}):
-                $typeValue = (string) $data->{$metadata->discriminatorFieldName};
+                $typeValue = (string)$data->{$metadata->discriminatorFieldName};
                 break;
 
             default:
@@ -149,7 +149,7 @@ final class DeserializerGraphNavigator extends GraphNavigator
                 ));
         }
 
-        if ( ! isset($metadata->discriminatorMap[$typeValue])) {
+        if (!isset($metadata->discriminatorMap[$typeValue])) {
             throw new \LogicException(sprintf(
                 'The type value "%s" does not exist in the discriminator map of class "%s". Available types: %s',
                 $typeValue,

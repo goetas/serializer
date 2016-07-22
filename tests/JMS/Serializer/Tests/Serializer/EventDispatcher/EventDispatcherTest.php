@@ -32,20 +32,25 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     public function testHasListeners()
     {
         $this->assertFalse($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
-        $this->dispatcher->addListener('foo', function() { });
+        $this->dispatcher->addListener('foo', function () {
+        });
         $this->assertTrue($this->dispatcher->hasListeners('foo', 'Foo', 'json'));
 
         $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
-        $this->dispatcher->addListener('bar', function() { }, 'Foo');
+        $this->dispatcher->addListener('bar', function () {
+        }, 'Foo');
         $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
-        $this->dispatcher->addListener('bar', function() { }, 'Bar', 'xml');
+        $this->dispatcher->addListener('bar', function () {
+        }, 'Bar', 'xml');
         $this->assertFalse($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
-        $this->dispatcher->addListener('bar', function() { }, null, 'json');
+        $this->dispatcher->addListener('bar', function () {
+        }, null, 'json');
         $this->assertTrue($this->dispatcher->hasListeners('bar', 'Baz', 'json'));
         $this->assertTrue($this->dispatcher->hasListeners('bar', 'Bar', 'json'));
 
         $this->assertFalse($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
-        $this->dispatcher->addListener('baz', function() { }, 'Bar');
+        $this->dispatcher->addListener('baz', function () {
+        }, 'Bar');
         $this->assertTrue($this->dispatcher->hasListeners('baz', 'Bar', 'xml'));
         $this->assertTrue($this->dispatcher->hasListeners('baz', 'bAr', 'xml'));
     }
@@ -121,7 +126,7 @@ class MockListener
 
     public function __call($method, array $args = array())
     {
-        if ( ! $this->wasReplayed) {
+        if (!$this->wasReplayed) {
             $this->expected[] = array($method, $args);
 
             return;

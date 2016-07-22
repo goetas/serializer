@@ -19,14 +19,14 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\Tests\Fixtures\Author;
 use JMS\Serializer\Tests\Fixtures\AuthorList;
+use JMS\Serializer\TypeDefinition;
+use JMS\Serializer\VisitorInterface;
 
 class JsonSerializationTest extends BaseSerializationTest
 {
@@ -111,7 +111,7 @@ class JsonSerializationTest extends BaseSerializationTest
     {
         $this->dispatcher->addSubscriber(new LinkAddingSubscriber());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'JMS\Serializer\Tests\Fixtures\AuthorList', 'json',
-            function(VisitorInterface $visitor, AuthorList $data, TypeDefinition $type, Context $context) {
+            function (VisitorInterface $visitor, AuthorList $data, TypeDefinition $type, Context $context) {
                 return $visitor->visitArray(iterator_to_array($data), $type, $context);
             }
         );
@@ -191,7 +191,7 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOff()
     {
         ini_set('display_errors', 1);
-        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
+        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*", 'c32e')));
     }
 
     /**
@@ -202,7 +202,7 @@ class JsonSerializationTest extends BaseSerializationTest
     public function testSerializeWithNonUtf8EncodingWhenDisplayErrorsOn()
     {
         ini_set('display_errors', 0);
-        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*" ,'c32e')));
+        $this->serialize(array('foo' => 'bar', 'bar' => pack("H*", 'c32e')));
     }
 
     public function testSerializeArrayWithEmptyObject()
@@ -223,8 +223,8 @@ class LinkAddingSubscriber implements EventSubscriberInterface
         $author = $event->getObject();
 
         $event->getVisitor()->addData('_links', array(
-            'details' => 'http://foo.bar/details/'.$author->getName(),
-            'comments' => 'http://foo.bar/details/'.$author->getName().'/comments',
+            'details' => 'http://foo.bar/details/' . $author->getName(),
+            'comments' => 'http://foo.bar/details/' . $author->getName() . '/comments',
         ));
     }
 

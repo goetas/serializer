@@ -18,8 +18,8 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 
 abstract class GenericSerializationVisitor extends AbstractVisitor
@@ -55,7 +55,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (string) $data;
+        return (string)$data;
     }
 
     public function visitBoolean($data, TypeDefinition $type, Context $context)
@@ -64,7 +64,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (boolean) $data;
+        return (boolean)$data;
     }
 
     public function visitInteger($data, TypeDefinition $type, Context $context)
@@ -73,7 +73,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (int) $data;
+        return (int)$data;
     }
 
     public function visitDouble($data, TypeDefinition $type, Context $context)
@@ -82,7 +82,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $this->root = $data;
         }
 
-        return (float) $data;
+        return (float)$data;
     }
 
     /**
@@ -98,12 +98,12 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = array();
         }
 
-        $isList = isset($type->getParams()[0]) && ! isset($type->getParams()[1]);
+        $isList = isset($type->getParams()[0]) && !isset($type->getParams()[1]);
 
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);
 
-            if (null === $v && ( ! is_string($k) || ! $context->shouldSerializeNull())) {
+            if (null === $v && (!is_string($k) || !$context->shouldSerializeNull())) {
                 continue;
             }
 
@@ -144,7 +144,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $v = $metadata->getValue($data);
 
         $v = $this->navigator->accept($v, $metadata->type, $context);
-        if (null === $v && ! $context->shouldSerializeNull()) {
+        if (null === $v && !$context->shouldSerializeNull()) {
             return;
         }
 

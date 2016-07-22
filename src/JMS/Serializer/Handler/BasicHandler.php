@@ -19,13 +19,10 @@
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\VisitorInterface;
 use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\XmlSerializationVisitor;
+use JMS\Serializer\TypeDefinition;
+use JMS\Serializer\VisitorInterface;
 
 class BasicHandler implements SubscribingHandlerInterface
 {
@@ -68,7 +65,7 @@ class BasicHandler implements SubscribingHandlerInterface
 
     public function visitGeneric(VisitorInterface $visitor, $data, TypeDefinition $type, Context $context)
     {
-        return $visitor->{'visit'.$type->getName()}($data, $type, $context);
+        return $visitor->{'visit' . $type->getName()}($data, $type, $context);
     }
 
     public function visitFloat(VisitorInterface $visitor, $data, TypeDefinition $type, Context $context)
@@ -80,7 +77,7 @@ class BasicHandler implements SubscribingHandlerInterface
     {
         $msg = 'Resources are not supported in serialized data.';
         if ($context->getDirection() === GraphNavigator::DIRECTION_SERIALIZATION && null !== $path = $context->getPath()) {
-            $msg .= ' Path: '.$path;
+            $msg .= ' Path: ' . $path;
         }
         throw new RuntimeException($msg);
     }

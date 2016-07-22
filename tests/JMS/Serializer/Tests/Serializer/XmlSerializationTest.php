@@ -19,23 +19,23 @@
 namespace JMS\Serializer\Tests\Serializer;
 
 use JMS\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\Tests\Fixtures\Input;
 use JMS\Serializer\Tests\Fixtures\InvalidUsageOfXmlValue;
-use JMS\Serializer\Exception\InvalidArgumentException;
-use JMS\Serializer\Tests\Fixtures\PersonCollection;
-use JMS\Serializer\Tests\Fixtures\PersonLocation;
-use JMS\Serializer\Tests\Fixtures\Person;
+use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlRootNamespace;
-use JMS\Serializer\Tests\Fixtures\Input;
+use JMS\Serializer\Tests\Fixtures\Person;
+use JMS\Serializer\Tests\Fixtures\PersonCollection;
+use JMS\Serializer\Tests\Fixtures\PersonLocation;
 use JMS\Serializer\Tests\Fixtures\SimpleClassObject;
 use JMS\Serializer\Tests\Fixtures\SimpleSubClassObject;
-use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 
 class XmlSerializationTest extends BaseSerializationTest
 {
@@ -55,7 +55,7 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testXMLBooleans($xmlBoolean, $boolean)
     {
         if ($this->hasDeserializer()) {
-            $this->assertSame($boolean, $this->deserialize('<result>'.$xmlBoolean.'</result>', 'boolean'));
+            $this->assertSame($boolean, $this->deserialize('<result>' . $xmlBoolean . '</result>', 'boolean'));
         }
     }
 
@@ -96,7 +96,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
-                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
             ]>
             <result>
                 &foo;
@@ -116,7 +116,7 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $this->deserializationVisitors->get('xml')->get()->setDoctypeWhitelist(array(
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
-            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
+            '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">]>'));
 
         $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">
@@ -124,7 +124,7 @@ class XmlSerializationTest extends BaseSerializationTest
 
         $this->serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE author [
-                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">
+                <!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource=' . basename(__FILE__) . '">
             ]>
             <foo></foo>', 'stdClass', 'xml');
     }
@@ -160,6 +160,7 @@ class XmlSerializationTest extends BaseSerializationTest
             $this->serialize(new ObjectWithVirtualXmlProperties(), SerializationContext::create()->setGroups(array('map')))
         );
     }
+
     public function testObjectWithNamespacesAndList()
     {
         $object = new ObjectWithNamespacesAndList();
@@ -167,16 +168,16 @@ class XmlSerializationTest extends BaseSerializationTest
         $object->nameAlternativeB = 'nameB';
 
         $object->phones = array('111', '222');
-        $object->addresses = array('A'=>'Street 1', 'B'=>'Street 2');
+        $object->addresses = array('A' => 'Street 1', 'B' => 'Street 2');
 
         $object->phonesAlternativeB = array('555', '666');
-        $object->addressesAlternativeB = array('A'=>'Street 5', 'B'=>'Street 6');
+        $object->addressesAlternativeB = array('A' => 'Street 5', 'B' => 'Street 6');
 
         $object->phonesAlternativeC = array('777', '888');
-        $object->addressesAlternativeC = array('A'=>'Street 7', 'B'=>'Street 8');
+        $object->addressesAlternativeC = array('A' => 'Street 7', 'B' => 'Street 8');
 
         $object->phonesAlternativeD = array('999', 'AAA');
-        $object->addressesAlternativeD = array('A'=>'Street 9', 'B'=>'Street A');
+        $object->addressesAlternativeD = array('A' => 'Street 9', 'B' => 'Street A');
 
         $this->assertEquals(
             $this->getContent('object_with_namespaces_and_list'),
@@ -282,7 +283,7 @@ class XmlSerializationTest extends BaseSerializationTest
     private function xpathFirstToString(\SimpleXMLElement $xml, $xpath)
     {
         $nodes = $xml->xpath($xpath);
-        return (string) reset($nodes);
+        return (string)reset($nodes);
     }
 
     /**
@@ -290,7 +291,7 @@ class XmlSerializationTest extends BaseSerializationTest
      */
     protected function getContent($key)
     {
-        if (!file_exists($file = __DIR__.'/xml/'.$key.'.xml')) {
+        if (!file_exists($file = __DIR__ . '/xml/' . $key . '.xml')) {
             throw new InvalidArgumentException(sprintf('The key "%s" is not supported.', $key));
         }
 

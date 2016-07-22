@@ -4,6 +4,6 @@
         <property name="name" xml-value="true" type="string">
             <xml-element cdata="false"/>
         </property>
-        <property name="age" xml-attribute="true" type="integer" />
+        <property name="age" xml-attribute="true" type="integer"/>
     </class>
 </serializer>

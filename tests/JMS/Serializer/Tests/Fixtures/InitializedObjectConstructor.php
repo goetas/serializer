@@ -18,11 +18,11 @@
 
 namespace JMS\Serializer\Tests\Fixtures;
 
+use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\Construction\ObjectConstructorInterface;
 
 /**
  * Object constructor that allows deserialization into already constructed

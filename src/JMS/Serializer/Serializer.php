@@ -19,10 +19,10 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
-use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use Metadata\MetadataFactoryInterface;
 use PhpCollection\MapInterface;
 
@@ -81,13 +81,12 @@ class Serializer implements SerializerInterface
         }
 
         return $this->serializationVisitors->get($format)
-            ->map(function(VisitorInterface $visitor) use ($context, $data, $format) {
+            ->map(function (VisitorInterface $visitor) use ($context, $data, $format) {
                 $this->visit($visitor, $context, $visitor->prepare($data), $format);
 
                 return $visitor->getResult();
             })
-            ->getOrThrow(new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format)))
-        ;
+            ->getOrThrow(new UnsupportedFormatException(sprintf('The format "%s" is not supported for serialization.', $format)));
     }
 
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
@@ -97,14 +96,13 @@ class Serializer implements SerializerInterface
         }
 
         return $this->deserializationVisitors->get($format)
-            ->map(function(VisitorInterface $visitor) use ($context, $data, $format, $type) {
+            ->map(function (VisitorInterface $visitor) use ($context, $data, $format, $type) {
                 $preparedData = $visitor->prepare($data);
                 $navigatorResult = $this->visit($visitor, $context, $preparedData, $format, $this->typeParser->parse($type));
 
                 return $this->handleDeserializeResult($visitor->getResult(), $navigatorResult);
             })
-            ->getOrThrow(new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format)))
-        ;
+            ->getOrThrow(new UnsupportedFormatException(sprintf('The format "%s" is not supported for deserialization.', $format)));
     }
 
     /**
@@ -123,11 +121,11 @@ class Serializer implements SerializerInterface
         }
 
         return $this->serializationVisitors->get('json')
-            ->map(function(JsonSerializationVisitor $visitor) use ($context, $data) {
+            ->map(function (JsonSerializationVisitor $visitor) use ($context, $data) {
                 $this->visit($visitor, $context, $data, 'json');
                 $result = $this->convertArrayObjects($visitor->getRoot());
 
-                if ( ! is_array($result)) {
+                if (!is_array($result)) {
                     throw new RuntimeException(sprintf(
                         'The input data of type "%s" did not convert to an array, but got a result of type "%s".',
                         is_object($data) ? get_class($data) : gettype($data),
@@ -137,8 +135,7 @@ class Serializer implements SerializerInterface
 
                 return $result;
             })
-            ->get()
-        ;
+            ->get();
     }
 
     /**
@@ -156,13 +153,12 @@ class Serializer implements SerializerInterface
         }
 
         return $this->deserializationVisitors->get('json')
-            ->map(function(JsonDeserializationVisitor $visitor) use ($data, $type, $context) {
+            ->map(function (JsonDeserializationVisitor $visitor) use ($data, $type, $context) {
                 $navigatorResult = $this->visit($visitor, $context, $data, 'json', $this->typeParser->parse($type));
 
                 return $this->handleDeserializeResult($visitor->getResult(), $navigatorResult);
             })
-            ->get()
-        ;
+            ->get();
     }
 
     private function visit(VisitorInterface $visitor, Context $context, $data, $format, TypeDefinition $type = null)
@@ -193,7 +189,7 @@ class Serializer implements SerializerInterface
     private function convertArrayObjects($data)
     {
         if ($data instanceof \ArrayObject) {
-            $data = (array) $data;
+            $data = (array)$data;
         }
         if (is_array($data)) {
             foreach ($data as $k => $v) {

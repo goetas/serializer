@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer;
 
-use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use Metadata\MetadataFactoryInterface;
 
@@ -48,7 +47,7 @@ class SerializationContext extends Context
 
     public function startVisiting($object)
     {
-        if ( ! is_object($object)) {
+        if (!is_object($object)) {
             return;
         }
         
@@ -58,7 +57,7 @@ class SerializationContext extends Context
 
     public function stopVisiting($object)
     {
-        if ( ! is_object($object)) {
+        if (!is_object($object)) {
             return;
         }
 
@@ -72,7 +71,7 @@ class SerializationContext extends Context
 
     public function isVisiting($object)
     {
-        if ( ! is_object($object)) {
+        if (!is_object($object)) {
             return false;
         }
 
@@ -86,7 +85,7 @@ class SerializationContext extends Context
             $path[] = get_class($obj);
         }
 
-        if ( ! $path) {
+        if (!$path) {
             return null;
         }
 
@@ -105,7 +104,7 @@ class SerializationContext extends Context
 
     public function getObject()
     {
-        return ! $this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
+        return !$this->visitingStack->isEmpty() ? $this->visitingStack->top() : null;
     }
 
     public function getVisitingStack()

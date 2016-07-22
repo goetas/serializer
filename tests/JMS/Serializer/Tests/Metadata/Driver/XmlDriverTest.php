@@ -18,10 +18,10 @@
 
 namespace JMS\Serializer\Tests\Metadata\Driver;
 
+use JMS\Serializer\Metadata\Driver\XmlDriver;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\TypeDefinition;
 use Metadata\Driver\FileLocator;
-use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\Serializer\Metadata\Driver\XmlDriver;
 
 class XmlDriverTest extends BaseDriverTest
 {
@@ -35,7 +35,7 @@ class XmlDriverTest extends BaseDriverTest
 
         $ref = new \ReflectionMethod($driver, 'loadMetadataFromFile');
         $ref->setAccessible(true);
-        $ref->invoke($driver, new \ReflectionClass('stdClass'), __DIR__.'/xml/invalid.xml');
+        $ref->invoke($driver, new \ReflectionClass('stdClass'), __DIR__ . '/xml/invalid.xml');
     }
 
     public function testBlogPostExcludeAllStrategy()
@@ -87,11 +87,11 @@ class XmlDriverTest extends BaseDriverTest
     {
         $append = '';
         if (func_num_args() == 1) {
-            $append = '/'.func_get_arg(0);
+            $append = '/' . func_get_arg(0);
         }
 
         return new XmlDriver(new FileLocator(array(
-            'JMS\Serializer\Tests\Fixtures' => __DIR__.'/xml'.$append,
+            'JMS\Serializer\Tests\Fixtures' => __DIR__ . '/xml' . $append,
         )));
     }
 }

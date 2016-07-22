@@ -19,12 +19,12 @@
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\TypeDefinition;
-use JMS\Serializer\XmlDeserializationVisitor;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 
 class DateHandler implements SubscribingHandlerInterface
@@ -50,7 +50,7 @@ class DateHandler implements SubscribingHandlerInterface
                     'type' => $type,
                     'format' => $format,
                     'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                    'method' => 'serialize'.$type,
+                    'method' => 'serialize' . $type,
                 );
             }
         }
@@ -93,7 +93,7 @@ class DateHandler implements SubscribingHandlerInterface
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, TypeDefinition $type)
     {
         $attributes = $data->attributes('xsi', true);
-        if (isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') {
+        if (isset($attributes['nil'][0]) && (string)$attributes['nil'][0] === 'true') {
             return null;
         }
 
@@ -113,7 +113,7 @@ class DateHandler implements SubscribingHandlerInterface
     {
         $timezone = isset($type->getParams()[1]) ? new \DateTimeZone($type->getParams()[1]) : $this->defaultTimezone;
         $format = $this->getFormat($type);
-        $datetime = \DateTime::createFromFormat($format, (string) $data, $timezone);
+        $datetime = \DateTime::createFromFormat($format, (string)$data, $timezone);
         if (false === $datetime) {
             throw new RuntimeException(sprintf('Invalid datetime "%s", expected format %s.', $data, $format));
         }
@@ -139,15 +139,15 @@ class DateHandler implements SubscribingHandlerInterface
         $format = 'P';
 
         if (0 < $dateInterval->y) {
-            $format .= $dateInterval->y.'Y';
+            $format .= $dateInterval->y . 'Y';
         }
 
         if (0 < $dateInterval->m) {
-            $format .= $dateInterval->m.'M';
+            $format .= $dateInterval->m . 'M';
         }
 
         if (0 < $dateInterval->d) {
-            $format .= $dateInterval->d.'D';
+            $format .= $dateInterval->d . 'D';
         }
 
         if (0 < $dateInterval->h || 0 < $dateInterval->i || 0 < $dateInterval->s) {
@@ -155,15 +155,15 @@ class DateHandler implements SubscribingHandlerInterface
         }
 
         if (0 < $dateInterval->h) {
-            $format .= $dateInterval->h.'H';
+            $format .= $dateInterval->h . 'H';
         }
 
         if (0 < $dateInterval->i) {
-            $format .= $dateInterval->i.'M';
+            $format .= $dateInterval->i . 'M';
         }
 
         if (0 < $dateInterval->s) {
-            $format .= $dateInterval->s.'S';
+            $format .= $dateInterval->s . 'S';
         }
 
         return $format;

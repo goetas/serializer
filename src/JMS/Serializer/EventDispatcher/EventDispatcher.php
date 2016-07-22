@@ -33,7 +33,7 @@ class EventDispatcher implements EventDispatcherInterface
     private $listeners = array();
     private $classListeners = array();
 
-    public static function getDefaultMethodName($eventName)
+    private static function getDefaultMethodName($eventName)
     {
         return 'on' . str_replace(array('_', '.'), '', $eventName);
     }

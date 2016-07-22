@@ -45,14 +45,14 @@ abstract class AbstractVisitor implements VisitorInterface
      */
     protected function getElementType(TypeDefinition $type)
     {
-        if (false === isset($type->getParams()[0])) {
+        if (false === $type->hasParam(0)) {
             return null;
         }
 
-        if (isset($type->getParams()[1]) && $type->getParams()[1] instanceof TypeDefinition) {
-            return $type->getParams()[1];
+        if ($type->hasParam(1) && $type->getParam(1) instanceof TypeDefinition) {
+            return $type->getParam(1);
         } else {
-            return $type->getParams()[0];
+            return $type->getParam(0);
         }
     }
 

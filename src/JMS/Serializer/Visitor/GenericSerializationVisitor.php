@@ -93,7 +93,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
             $rs = array();
         }
 
-        $isList = isset($type->getParams()[0]) && !isset($type->getParams()[1]);
+        $isList = $type->hasParam(0) && !$type->hasParam(1);
 
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, $this->getElementType($type), $context);

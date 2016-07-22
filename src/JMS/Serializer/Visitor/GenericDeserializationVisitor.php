@@ -115,7 +115,7 @@ abstract class GenericDeserializationVisitor extends AbstractVisitor
 
         switch (count($type->getParams())) {
             case 1: // Array is a list.
-                $listType = $type->getParams()[0];
+                $listType = $type->getParam(0);
 
                 $result = array();
                 if (null === $this->result) {

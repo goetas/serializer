@@ -169,7 +169,7 @@ class XmlDeserializationVisitor extends AbstractVisitor
 
                 $nodes = $data->children($namespace)->$entryName;
                 foreach ($nodes as $v) {
-                    $result[] = $this->navigator->accept($v, $type->getParams()[0], $context);
+                    $result[] = $this->navigator->accept($v, $type->getParam(0), $context);
                 }
 
                 return $result;

@@ -84,7 +84,7 @@ class YamlSerializationVisitor extends AbstractVisitor
     public function visitArray($data, TypeDefinition $type, Context $context)
     {
         $count = $this->writer->changeCount;
-        $isList = (isset($type->getParams()[0]) && !isset($type->getParams()[1]))
+        $isList = ($type->hasParam(0) && !$type->hasParam(1))
             || array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
@@ -109,7 +109,7 @@ class YamlSerializationVisitor extends AbstractVisitor
             $this->writer->outdent();
         }
 
-        if ($count === $this->writer->changeCount && isset($type->getParams()[1])) {
+        if ($count === $this->writer->changeCount && $type->hasParam(1)) {
             $this->writer
                 ->rtrim(false)
                 ->writeln(' {}');

@@ -53,4 +53,14 @@ final class TypeDefinition
     {
         return $this->params;
     }
+
+    public function hasParam($index)
+    {
+        return isset($this->params[$index]);
+    }
+
+    public function getParam($index)
+    {
+        return $this->params[$index];
+    }
 }

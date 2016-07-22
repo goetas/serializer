@@ -21,9 +21,6 @@ namespace JMS\Serializer\Exclusion;
 use JMS\Serializer\Context;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use PhpCollection\Sequence;
-use PhpCollection\SequenceInterface;
-
 /**
  * Disjunct Exclusion Strategy.
  *
@@ -33,18 +30,13 @@ use PhpCollection\SequenceInterface;
  */
 class DisjunctExclusionStrategy implements ExclusionStrategyInterface
 {
-    /** @var \PhpCollection\SequenceInterface */
-    private $delegates;
+    private $delegates = [];
 
     /**
-     * @param ExclusionStrategyInterface[]|SequenceInterface $delegates
+     * @param array $delegates
      */
-    public function __construct($delegates)
+    public function __construct(array $delegates)
     {
-        if (!$delegates instanceof SequenceInterface) {
-            $delegates = new Sequence($delegates);
-        }
-
         $this->delegates = $delegates;
     }
 

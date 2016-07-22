@@ -33,14 +33,12 @@ use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\BasicHandler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\Handler\PhpCollectionHandler;
 use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
-use PhpCollection\Map;
 
 /**
  * Builder for serializer instances.
@@ -58,8 +56,8 @@ class SerializerBuilder
     private $eventDispatcher;
     private $listenersConfigured = false;
     private $objectConstructor;
-    private $serializationVisitors;
-    private $deserializationVisitors;
+    private $serializationVisitors = [];
+    private $deserializationVisitors = [];
     private $visitorsAdded = false;
     private $propertyNamingStrategy;
     private $debug = false;
@@ -78,8 +76,6 @@ class SerializerBuilder
         $this->handlerRegistry = new HandlerRegistry();
         $this->eventDispatcher = new EventDispatcher();
         $this->driverFactory = new DefaultDriverFactory();
-        $this->serializationVisitors = new Map();
-        $this->deserializationVisitors = new Map();
     }
 
     public function setAnnotationReader(Reader $reader)
@@ -115,7 +111,6 @@ class SerializerBuilder
         $this->handlersConfigured = true;
         $this->handlerRegistry->registerSubscribingHandler(new BasicHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
 
@@ -163,7 +158,7 @@ class SerializerBuilder
     public function setSerializationVisitor($format, VisitorInterface $visitor)
     {
         $this->visitorsAdded = true;
-        $this->serializationVisitors->set($format, $visitor);
+        $this->serializationVisitors[$format] = $visitor;
 
         return $this;
     }
@@ -171,8 +166,7 @@ class SerializerBuilder
     public function setDeserializationVisitor($format, VisitorInterface $visitor)
     {
         $this->visitorsAdded = true;
-        $this->deserializationVisitors->set($format, $visitor);
-
+        $this->deserializationVisitors[$format] = $visitor;
         return $this;
     }
 
@@ -181,11 +175,11 @@ class SerializerBuilder
         $this->initializePropertyNamingStrategy();
 
         $this->visitorsAdded = true;
-        $this->serializationVisitors->setAll(array(
+        $this->serializationVisitors = array(
             'xml' => new XmlSerializationVisitor($this->propertyNamingStrategy),
             'yml' => new YamlSerializationVisitor($this->propertyNamingStrategy),
             'json' => new JsonSerializationVisitor($this->propertyNamingStrategy),
-        ));
+        );
 
         return $this;
     }
@@ -195,10 +189,10 @@ class SerializerBuilder
         $this->initializePropertyNamingStrategy();
 
         $this->visitorsAdded = true;
-        $this->deserializationVisitors->setAll(array(
+        $this->deserializationVisitors = array(
             'xml' => new XmlDeserializationVisitor($this->propertyNamingStrategy),
             'json' => new JsonDeserializationVisitor($this->propertyNamingStrategy),
-        ));
+        );
 
         return $this;
     }

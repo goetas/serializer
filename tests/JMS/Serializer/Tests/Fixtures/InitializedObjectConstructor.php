@@ -47,8 +47,8 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
      */
     public function construct(VisitorInterface $visitor, ClassMetadata $metadata, $data, TypeDefinition $type, DeserializationContext $context)
     {
-        if ($context->attributes->containsKey('target') && $context->getDepth() === 1) {
-            return $context->attributes->get('target')->get();
+        if (isset($context->attributes['target']) && $context->getDepth() === 1) {
+            return $context->attributes['target'];
         }
 
         return $this->fallbackConstructor->construct($visitor, $metadata, $data, $type, $context);

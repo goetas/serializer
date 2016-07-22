@@ -28,14 +28,10 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
-use PhpCollection\Map;
 
 abstract class Context
 {
-    /**
-     * @var \PhpCollection\Map
-     */
-    public $attributes;
+    public $attributes = [];
 
     private $format;
 
@@ -61,7 +57,6 @@ abstract class Context
 
     public function __construct()
     {
-        $this->attributes = new Map();
     }
 
     /**
@@ -109,7 +104,7 @@ abstract class Context
     public function setAttribute($key, $value)
     {
         $this->assertMutable();
-        $this->attributes->set($key, $value);
+        $this->attributes[$key] = $value;
 
         return $this;
     }
@@ -156,7 +151,7 @@ abstract class Context
             throw new \LogicException('The version must not be null.');
         }
 
-        $this->attributes->set('version', $version);
+        $this->attributes['version'] = $version;
         $this->addExclusionStrategy(new VersionExclusionStrategy($version));
 
         return $this;
@@ -170,8 +165,8 @@ abstract class Context
         if (empty($groups)) {
             throw new \LogicException('The groups must not be empty.');
         }
-
-        $this->attributes->set('groups', (array)$groups);
+        
+        $this->attributes['groups'] = (array)$groups;
         $this->addExclusionStrategy(new GroupsExclusionStrategy((array)$groups));
 
         return $this;

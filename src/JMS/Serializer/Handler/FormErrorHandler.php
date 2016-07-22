@@ -26,6 +26,7 @@ use JMS\Serializer\XmlSerializationVisitor;
 use JMS\Serializer\YamlSerializationVisitor;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class FormErrorHandler implements SubscribingHandlerInterface
@@ -56,7 +57,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         $this->translator = $translator;
     }
 
-    public function serializeFormToXml(XmlSerializationVisitor $visitor, Form $form, TypeDefinition $type)
+    public function serializeFormToXml(XmlSerializationVisitor $visitor, FormInterface $form, TypeDefinition $type)
     {
         if (null === $visitor->document) {
             $visitor->document = $visitor->createDocument(null, null, false);
@@ -78,7 +79,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         }
 
         foreach ($form->all() as $child) {
-            if ($child instanceof Form) {
+            if ($child instanceof FormInterface) {
                 if (null !== $node = $this->serializeFormToXml($visitor, $child, TypeDefinition::getUnknown())) {
                     $formNode->appendChild($node);
                 }
@@ -88,12 +89,12 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $formNode;
     }
 
-    public function serializeFormToJson(JsonSerializationVisitor $visitor, Form $form, TypeDefinition $type)
+    public function serializeFormToJson(JsonSerializationVisitor $visitor, FormInterface $form, TypeDefinition $type)
     {
         return $this->convertFormToArray($visitor, $form);
     }
 
-    public function serializeFormToYml(YamlSerializationVisitor $visitor, Form $form, TypeDefinition $type)
+    public function serializeFormToYml(YamlSerializationVisitor $visitor, FormInterface $form, TypeDefinition $type)
     {
         return $this->convertFormToArray($visitor, $form);
     }
@@ -126,7 +127,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
         return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
     }
 
-    private function convertFormToArray(GenericSerializationVisitor $visitor, Form $data)
+    private function convertFormToArray(GenericSerializationVisitor $visitor, FormInterface $data)
     {
         $isRoot = null === $visitor->getRoot();
 
@@ -142,7 +143,7 @@ class FormErrorHandler implements SubscribingHandlerInterface
 
         $children = array();
         foreach ($data->all() as $child) {
-            if ($child instanceof Form) {
+            if ($child instanceof FormInterface) {
                 $children[$child->getName()] = $this->convertFormToArray($visitor, $child);
             }
         }

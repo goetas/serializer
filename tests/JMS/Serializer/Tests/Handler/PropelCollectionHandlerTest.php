@@ -2,6 +2,9 @@
 
 namespace JMS\Serializer\Tests\Handler;
 
+use JMS\Serializer\Handler\BasicHandler;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
+use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\SerializerBuilder;
 
 class PropelCollectionHandlerTest extends \PHPUnit_Framework_TestCase
@@ -12,7 +15,10 @@ class PropelCollectionHandlerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serializer = SerializerBuilder::create()
-            ->addDefaultHandlers()//load PropelCollectionHandler
+            ->configureHandlers(function(HandlerRegistryInterface $handlerRegistry){
+                $handlerRegistry->registerSubscribingHandler(new BasicHandler());
+                $handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
+            })
             ->build();
     }
 

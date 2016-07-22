@@ -118,7 +118,6 @@ class SerializerBuilder
         $this->handlerRegistry->registerSubscribingHandler(new BasicHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
-        $this->handlerRegistry->registerSubscribingHandler(new PropelCollectionHandler());
 
         return $this;
     }

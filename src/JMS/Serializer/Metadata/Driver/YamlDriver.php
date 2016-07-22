@@ -18,7 +18,6 @@
 
 namespace JMS\Serializer\Metadata\Driver;
 
-use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use Metadata\MethodMetadata;

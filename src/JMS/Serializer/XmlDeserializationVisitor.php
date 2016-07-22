@@ -22,6 +22,7 @@ use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\XmlErrorException;
+use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 

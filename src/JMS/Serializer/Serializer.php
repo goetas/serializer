@@ -22,6 +22,7 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Exception\UnsupportedFormatException;
+use JMS\Serializer\Graph\GraphNavigatorFactory;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use Metadata\MetadataFactoryInterface;
 
@@ -78,7 +79,7 @@ class Serializer implements SerializerInterface
         if (!isset($array[$format])){
             throw new UnsupportedFormatException(sprintf('The format "%s" is not supported for %s.', $format, $context->getDirection()));
         }
-        
+
         return call_user_func($callback, $array[$format]);
 
     }

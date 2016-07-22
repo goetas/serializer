@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Graph;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Event;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\TypeDefinition;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -71,6 +73,7 @@ abstract class GraphNavigator
      * @param mixed $data the data depends on the direction, and type of visitor
      * @param null|TypeDefinition $type array has the format ["name" => string, "params" => array]
      *
+     * @param Context $context
      * @return mixed the return value depends on the direction, and type of visitor
      */
     public abstract function accept($data, TypeDefinition $type = null, Context $context);

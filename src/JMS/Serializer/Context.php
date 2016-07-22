@@ -24,6 +24,7 @@ use JMS\Serializer\Exclusion\DisjunctExclusionStrategy;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
+use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactory;

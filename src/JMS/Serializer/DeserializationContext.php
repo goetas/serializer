@@ -18,6 +18,8 @@
 
 namespace JMS\Serializer;
 
+use JMS\Serializer\Graph\GraphNavigator;
+
 class DeserializationContext extends Context
 {
     private $depth = 0;

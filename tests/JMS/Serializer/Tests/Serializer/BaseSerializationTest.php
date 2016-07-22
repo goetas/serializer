@@ -26,7 +26,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
 use JMS\Serializer\Exclusion\DepthExclusionStrategy;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
 use JMS\Serializer\Handler\BasicHandler;
 use JMS\Serializer\Handler\ConstraintViolationHandler;

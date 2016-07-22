@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Graph;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
+use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\TypeDefinition;
 use Metadata\MetadataFactoryInterface;
 
 /**

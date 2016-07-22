@@ -19,6 +19,7 @@
 namespace JMS\Serializer;
 
 use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 

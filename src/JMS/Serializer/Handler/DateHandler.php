@@ -20,7 +20,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;

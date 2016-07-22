@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\Serializer;
+namespace JMS\Serializer\Graph;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;

@@ -8,7 +8,7 @@ From 0.13 to ???
 From 0.11 to 0.12
 =================
 
-- GraphNavigator::detachObject has been removed, you can directly use Context::stopVisiting instead.
+- Graph\GraphNavigator::detachObject has been removed, you can directly use Context::stopVisiting instead.
 - VisitorInterface::getNavigator was deprecated, instead use Context::accept
 - Serializer::setGroups, Serializer::setExclusionStrategy and Serializer::setVersion were removed, these settings must
   now be passed as part of a new Context object.

@@ -20,7 +20,7 @@ namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Graph\GraphNavigator;
 use JMS\Serializer\TypeDefinition;
 use JMS\Serializer\VisitorInterface;
 
@@ -30,7 +30,7 @@ class BasicHandler implements SubscribingHandlerInterface
     {
         $methods = array();
         $types = array('integer', 'NULL', 'string', 'boolean', 'double', 'array');
-        
+
         foreach ($types as $type) {
             $methods[] = array(
                 'type' => $type,

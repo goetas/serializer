@@ -19,8 +19,7 @@
 namespace JMS\Serializer\Handler;
 
 use JMS\Serializer\Exception\LogicException;
-use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Graph\GraphNavigator;
 
 class HandlerRegistry implements HandlerRegistryInterface
 {

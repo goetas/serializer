@@ -32,6 +32,8 @@ use JMS\Serializer\Tests\Fixtures\AuthorExpressionAccess;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\ProxyCar;
+use JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\ProxyFastCar;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\GroupsUser;
 use JMS\Serializer\Tests\Fixtures\InlineChild;
@@ -1219,6 +1221,19 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                 'Class is resolved correctly when concrete sub-class is used and no type is defined.'
             );
         }
+    }
+
+    /**
+     * @group polymorphic
+     */
+    public function testSerializeDoctrineProxy()
+    {
+        $context = SerializationContext::create()->setGroups('foo');
+        $car = new ProxyFastCar(5);
+        $this->assertEquals(
+            $this->getContent('fast_car'),
+            $this->serialize($car, $context)
+        );
     }
 
     /**

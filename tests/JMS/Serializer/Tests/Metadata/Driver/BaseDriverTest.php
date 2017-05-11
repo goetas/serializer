@@ -243,7 +243,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($m->name, $m->discriminatorBaseClass);
         $this->assertEquals(
             array(
-                'car' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car'
+                'car' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car',
             ),
             $m->discriminatorMap
         );

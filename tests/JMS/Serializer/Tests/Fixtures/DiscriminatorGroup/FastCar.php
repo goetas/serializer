@@ -18,24 +18,6 @@
 
 namespace JMS\Serializer\Tests\Fixtures\DiscriminatorGroup;
 
-use JMS\Serializer\Annotation as Serializer;
-
-/**
- * @Serializer\Discriminator(field = "type", groups={"foo"}, map = {
- *    "car": "JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car",
- *    "fast_car": "JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\FastCar",
- * })
- */
-abstract class Vehicle
+class FastCar extends Car
 {
-    /**
-     * @Serializer\Type("integer")
-     * @Serializer\Groups({"foo"})
-     */
-    public $km;
-
-    public function __construct($km)
-    {
-        $this->km = (integer) $km;
-    }
 }

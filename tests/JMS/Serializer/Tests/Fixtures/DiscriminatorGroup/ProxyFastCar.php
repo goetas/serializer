@@ -18,24 +18,21 @@
 
 namespace JMS\Serializer\Tests\Fixtures\DiscriminatorGroup;
 
-use JMS\Serializer\Annotation as Serializer;
+use Doctrine\Common\Persistence\Proxy;
 
-/**
- * @Serializer\Discriminator(field = "type", groups={"foo"}, map = {
- *    "car": "JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\Car",
- *    "fast_car": "JMS\Serializer\Tests\Fixtures\DiscriminatorGroup\FastCar",
- * })
- */
-abstract class Vehicle
+class ProxyFastCar extends FastCar implements Proxy
 {
-    /**
-     * @Serializer\Type("integer")
-     * @Serializer\Groups({"foo"})
-     */
-    public $km;
+    public $__isInitialized__ = false;
 
-    public function __construct($km)
+    public function __load()
     {
-        $this->km = (integer) $km;
+        if (!$this->__isInitialized__) {
+            $this->__isInitialized__ = true;
+        }
+    }
+
+    public function __isInitialized()
+    {
+        return $this->__isInitialized__;
     }
 }

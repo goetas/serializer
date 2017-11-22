@@ -42,6 +42,7 @@ use JMS\Serializer\Tests\Fixtures\ObjectWithNamespacesAndList;
 use JMS\Serializer\Tests\Fixtures\ObjectWithToString;
 use JMS\Serializer\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairs;
+use JMS\Serializer\Tests\Fixtures\ObjectWithXmlKeyValuePairsWithSameValueTypes;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectProperty;
 use JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespacesAndObjectPropertyAuthor;
@@ -247,6 +248,13 @@ class XmlSerializationTest extends BaseSerializationTest
     public function testArrayKeyValues()
     {
         $this->assertEquals($this->getContent('array_key_values'), $this->serializer->serialize(new ObjectWithXmlKeyValuePairs(), 'xml'));
+    }
+
+    public function testDeserializeArrayKeyValues()
+    {
+        $xml = $this->getContent('array_key_values_with_same_value_types');
+        $result = $this->serializer->deserialize($xml, ObjectWithXmlKeyValuePairsWithSameValueTypes::class, 'xml');
+        $this->assertEquals(new ObjectWithXmlKeyValuePairsWithSameValueTypes(), $result);
     }
 
     /**

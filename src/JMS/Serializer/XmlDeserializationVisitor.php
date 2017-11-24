@@ -151,13 +151,8 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
 
     public function visitArray($data, array $type, Context $context)
     {
-        $metadata = $this->currentMetadata;
-        if (null === $metadata && $context->getMetadataStack()->count()) {
-            $metadata = $context->getMetadataStack()->top();
-        }
-
         // handle key-value-pairs
-        if (null !== $metadata && $metadata->xmlKeyValuePairs) {
+        if ($this->currentMetadata !== null && $this->currentMetadata->xmlKeyValuePairs) {
             if (2 !== count($type['params'])) {
                 throw new RuntimeException(sprintf('The array type must be specified as "array<K,V>" for Key-Value-Pairs.'));
             }
@@ -290,6 +285,10 @@ class XmlDeserializationVisitor extends AbstractVisitor implements NullAwareVisi
             $this->accessor->setValue($this->currentObject, $v, $metadata);
 
             return;
+        }
+
+        if ($metadata->xmlKeyValuePairs) {
+            $this->setCurrentMetadata($metadata);
         }
 
         if ($metadata->xmlNamespace) {
